@@ -1,9 +1,17 @@
-import './App.css';
+import React from "react";
+import Header from "./Header";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <h1> HI</h1>
+      <Router>
+        <Header />
+        <Switch>
+          <Route path="/"></Route>
+        </Switch>
+      </Router>
     </div>
   );
 }
