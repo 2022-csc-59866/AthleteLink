@@ -9,13 +9,13 @@ import SwipeButtons from "./SwipeButtons";
 function App() {
   return (
     <div className="App">
-      <Header />
       <Router>
         <Switch>
           <Route path="/chat">
-            <h1> CHAT PAGE</h1>
+            <Header backButton="/"/>
           </Route>
           <Route path="/">
+              <Header />
               <AthleteLinkCards/>
               <SwipeButtons />
 
