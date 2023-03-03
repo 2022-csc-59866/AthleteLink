@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TinderCard from "react-tinder-card";
-import "./AthleteLinkCards.css";
+import "./AthleteLinkCard.css";
+import {database} from "./firebase";
+
 const AthleteLinkCards = () => {
-  const [people, setPeople] = useState([
-    {
-      name: "NAME TWO",
-      url: "https://addicted2success.com/wp-content/uploads/2017/11/10-Things-We-Can-Learn-From-the-Incredible-Steve-Jobs.jpg",
-    },
-    {
-      name: "NAME ONE ",
-      url: "https://www.muscleandfitness.com/wp-content/uploads/2019/05/10-Best-Arms-Olympia-Arnold-Schwarzenegar.jpg?w=940&h=529&crop=1&quality=86&strip=all",
-    },
-  ]);
+  const [people, setPeople] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = database
+      .collection("people")
+      .onSnapshot((snapshot) =>
+        setPeople(snapshot.docs.map((doc) => doc.data()))
+      );
+    return () => {
+      // cleanup
+      unsubscribe();
+    };
+  }, [people]);
 
   return (
     <div>
