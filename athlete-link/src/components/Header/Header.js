@@ -4,7 +4,7 @@ import React from "react";
 import PersonIcon from "@mui/icons-material/Person";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import "./Header.css";
-import logo from "./assets/logo-black.png";
+import logo from "../../assets/logo-black.png";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Link, useHistory } from "react-router-dom";
@@ -17,13 +17,15 @@ const Header = ({ backButton }) => {
           <ArrowBackIosIcon fontSize="large" className="header__icon" />
         </IconButton>
       ) : (
-        <IconButton>
-          <PersonIcon fontSize="large" className="header__icon" />
-        </IconButton>
+        <Link to="/myprofile">
+          <IconButton>
+            <PersonIcon fontSize="large" className="header__icon" />
+          </IconButton>
+        </Link>
       )}
 
       <Link to="/">
-        <img className="header__logo" src={logo} alt="Gymmate" />
+        <img className="header__logo" src={logo} alt="AthleteLink" />
       </Link>
 
       <Link to="/chat">
