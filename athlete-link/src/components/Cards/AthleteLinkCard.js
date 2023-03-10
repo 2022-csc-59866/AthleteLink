@@ -16,7 +16,7 @@ const AthleteLinkCards = () => {
       // cleanup
       unsubscribe();
     };
-  }, [people]);
+  }, []);
 
   return (
     <div>
@@ -31,7 +31,7 @@ const AthleteLinkCards = () => {
               style={{ backgroundImage: `url(${person.url})` }}
               className="card"
             >
-              <h3>{person.name}</h3>
+              <h3>{person.firstName + " " + person.lastName}</h3>
             </div>
           </TinderCard>
         ))}

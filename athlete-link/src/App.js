@@ -6,9 +6,11 @@ import "./App.css";
 import SwipeButtons from "./SwipeButtons";
 import Chats from "./components/Chat/Chats";
 import ChatScreen from "./components/Chat/ChatScreen";
-import Login from "./Login";
+import Login from "./components/Login/Login";
 import { useStateValue } from "./StateProvider";
-import MyProfile from "./MyProfile";
+import MyProfile from "./components/MyProfile/MyProfile";
+import NewUser from "./components/NewUser/NewUser";
+import Registration from "./components/SignUp/Registration";
 
 
 function App() {
@@ -17,7 +19,16 @@ function App() {
   return (
     <div className="App">
       {!user ? (
-        <Login />
+        <Router>
+          <Switch>
+            <Route path="/signup">
+              <Registration />
+            </Route>
+            <Route path="/">
+              <Login />
+            </Route>
+          </Switch>
+        </Router>
       ) : (
         <Router>
           <Switch>
@@ -32,6 +43,9 @@ function App() {
             <Route path="/chat">
               <Header backButton="/" />
               <Chats />
+            </Route>
+            <Route path="signup">
+              <Registration />
             </Route>
             <Route path="/">
               <Header />
