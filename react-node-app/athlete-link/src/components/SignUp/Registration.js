@@ -118,7 +118,7 @@ function Registration() {
       })
       .catch((error) => alert(error.message));
   };
-  const signInWithGymLink = () => {};
+  const signInWithAthleteLink = () => {};
   return (
     <div className="register__outterContainer">
       <div className="register__innerContainer">
@@ -169,6 +169,7 @@ function Registration() {
               multiple
               type="file"
               onChange={handleUploadClick}
+              required
             />
             <label htmlFor="contained-button-file">
               <Fab component="span" className={classes.button}>

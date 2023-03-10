@@ -11,7 +11,7 @@ import { useStateValue } from "./StateProvider";
 import MyProfile from "./components/MyProfile/MyProfile";
 import NewUser from "./components/NewUser/NewUser";
 import Registration from "./components/SignUp/Registration";
-
+import SignInWithAthleteLink from "./components/SignIn/SignInWithAthleteLink";
 
 function App() {
   const [{ user }, dispatch] = useStateValue();
@@ -21,6 +21,9 @@ function App() {
       {!user ? (
         <Router>
           <Switch>
+            <Route path="/signin">
+              <SignInWithAthleteLink />
+            </Route>
             <Route path="/signup">
               <Registration />
             </Route>

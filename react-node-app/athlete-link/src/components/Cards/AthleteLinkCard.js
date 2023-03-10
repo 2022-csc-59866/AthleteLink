@@ -5,7 +5,9 @@ import {database} from "../../firebase";
 
 const AthleteLinkCards = () => {
   const [people, setPeople] = useState([]);
-
+  const [currentPerson, setCurrentPerson] = useState({
+    name: "initialName",
+  });
   useEffect(() => {
     const unsubscribe = database
       .collection("people")
@@ -19,7 +21,7 @@ const AthleteLinkCards = () => {
   }, []);
 
   return (
-    <div>
+    <div key={currentPerson.name}>
       <div className="athleteLinkCards__cardContainer">
         {people.map((person) => (
           <TinderCard
