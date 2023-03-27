@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import axios from 'axios';
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useStateValue } from "../../StateProvider";
@@ -42,83 +42,18 @@ const useStyles = makeStyles((theme) => ({
 function Registration() {
   const classes = useStyles();
   const [{ user }, dispatch] = useStateValue();
-  const [firstName, setFirstName] = useState(null);
-  const [lastName, setLastName] = useState(null);
   const [email, setEmail] = useState(null);
-  const [age, setAge] = useState(null);
-  const [pass, setPass] = useState(null);
-  const [lat, setLat] = useState(null);
-  const [long, setLong] = useState(null);
-  const [file, setFile] = useState(null);
 
-  const handleUploadClick = (event) => {
-    console.log(file);
-    setFile(event.target.files[0]);
-    console.log(file);
-  };
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      if (position) {
-        setLat(position.coords.latitude);
-        setLong(position.coords.longitude);
-      }
-    });
-  }, []);
+  const [password, setPassword] = useState(null);
 
   const signUp = (e) => {
     e.preventDefault();
-    console.log("signup");
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, pass)
-      .then((auth) => {
+    return axios.post('http://localhost:3001/api/create-user', {email,password}).then((auth) => {
         dispatch({
           type: actionTypes.SET_USER,
-          user: auth.user,
-        });
-        firebase
-          .storage()
-          .ref("users/" + auth.user.uid + "/profilejpg")
-          .put(file)
-          .then(function () {
-            console.log("successfully uploaded image");
-          })
-          .catch((error) => {
-            console.log(error.message);
-          });
-        database
-          .collection("people")
-          .doc(auth.user.uid)
-          .set({
-            firstName: firstName,
-            lastName: lastName,
-            age: age,
-            location: {
-              lat: lat,
-              long: long,
-            },
-          })
-          .then(() => {
-            console.log("Document successfully written!");
-          })
-          .catch((error) => {
-            console.error("Error writing document: ", error);
-          });
-      });
-  };
-  const signInGoogle = () => {
-    auth
-      .signInWithPopup(provider)
-      .then((result) => {
-        dispatch({
-          type: actionTypes.SET_USER,
-          user: result.user,
-        });
-      })
-      .catch((error) => alert(error.message));
-  };
-  const signInWithAthleteLink = () => {};
+          user: auth.data.uid,
+        })}).catch(error => console.error("Error while creating user", error))}
+  
   return (
     <div className="register__outterContainer">
       <div className="register__innerContainer">
@@ -126,26 +61,7 @@ function Registration() {
           <Box m={4} pb={5}>
             <h1>Sign Up</h1>
           </Box>
-          <TextField
-            onChange={(e) => {
-              setFirstName(e.target.value);
-            }}
-            label="First Name"
-            variant="outlined"
-            required
-          />
-          <TextField
-            onChange={(e) => setLastName(e.target.value)}
-            label="Last Name"
-            variant="outlined"
-            required
-          />
-          <TextField
-            onChange={(e) => setAge(e.target.value)}
-            label="Age"
-            variant="outlined"
-            required
-          />
+          
           <TextField
             onChange={(e) => setEmail(e.target.value)}
             label="Email"
@@ -157,27 +73,10 @@ function Registration() {
             label="Password"
             variant="outlined"
             type="password"
-            onChange={(e) => setPass(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <h3>Select Profile Image</h3>
-          <CardContent>
-            <input
-              accept="image/*"
-              className={classes.input}
-              id="contained-button-file"
-              multiple
-              type="file"
-              onChange={handleUploadClick}
-              required
-            />
-            <label htmlFor="contained-button-file">
-              <Fab component="span" className={classes.button}>
-                <AddPhotoAlternateIcon />
-              </Fab>
-            </label>
-            {file ? <h4>{file.name}</h4> : <br></br>}
-          </CardContent>
+         
 
           <div>
             <Link to="/">

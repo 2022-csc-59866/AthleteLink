@@ -4,17 +4,10 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useStateValue } from "../../StateProvider";
 import firebase from 'firebase/compat/app';
-import {database} from "../../firebase";
-import SaveIcon from "@mui/icons-material/Save";
 import Box from "@material-ui/core/Box";
-import CardContent from "@material-ui/core/CardContent";
-import Fab from "@material-ui/core/Fab";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
-import { auth } from "../../firebase";
-import { provider } from "../../firebase";
 import { actionTypes } from "../../reducer";
-import { emphasize, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import "./SignInWithAthleteLink.css";
 
@@ -47,14 +40,14 @@ function SignInWithAthleteLink() {
 
   const signIn = (e) => {
     e.preventDefault();
-    console.log("signin");
+    
     firebase
       .auth()
       .signInWithEmailAndPassword(email, pass)
       .then((userCredential) => {
         dispatch({
           type: actionTypes.SET_USER,
-          user: userCredential.user,
+          user: userCredential.user.uid,
         });
       })
       .catch((error) => {
