@@ -1,5 +1,5 @@
 var admin = require("firebase-admin");
-
+const {getFirestore}  = require("firebase-admin/firestore") 
 var serviceAccount = require("./athletelink-2b0c4-firebase-adminsdk-a4c8v-c77e827605.json");
 
 admin.initializeApp({
@@ -7,7 +7,6 @@ admin.initializeApp({
   databaseURL: "https://athletelink-2b0c4-default-rtdb.firebaseio.com"
 });
 
-const db=admin.firestore()
+const db=getFirestore()
 
-const User = db.collection("Users")
-module.exports = User
+module.exports = {db}
