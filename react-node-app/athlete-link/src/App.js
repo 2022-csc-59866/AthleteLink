@@ -12,9 +12,9 @@ import MyProfile from "./components/MyProfile/MyProfile";
 import NewUser from "./components/NewUser/NewUser";
 import Registration from "./components/SignUp/Registration";
 import SignInWithAthleteLink from "./components/SignIn/SignInWithAthleteLink";
-
+import OnboardingWizard from "./components/Onboarding/OnboardingWizard";
 function App() {
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user,  newUserFlag}, dispatch] = useStateValue();
 
   const [data, setData] = React.useState(null);
 
@@ -36,13 +36,19 @@ function App() {
             <Route path="/signup">
               <Registration />
             </Route>
+            <Route path="/onboarding">
+              <OnboardingWizard/>
+            </Route>
             <Route path="/">
               <Login />
             </Route>
           </Switch>
         </Router>
       ) : (
-        <Router>
+        newUserFlag ? (
+          <OnboardingWizard/>
+        ) : (
+          <Router>
           <Switch>
             <Route path="/myprofile">
               <Header backButton="/" />
@@ -66,6 +72,8 @@ function App() {
             </Route>
           </Switch>
         </Router>
+        )
+        
       )}
     </div>
   );

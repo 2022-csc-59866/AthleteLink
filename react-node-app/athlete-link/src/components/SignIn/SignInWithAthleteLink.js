@@ -10,6 +10,7 @@ import { actionTypes } from "../../reducer";
 import { makeStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import "./SignInWithAthleteLink.css";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,10 +34,10 @@ const useStyles = makeStyles((theme) => ({
 
 function SignInWithAthleteLink() {
   const classes = useStyles();
-  //   const [{ user }, dispatch] = useStateValue();
-  const [{}, dispatch] = useStateValue();
+  const [{user} , dispatch] = useStateValue();
   const [email, setEmail] = useState(null);
   const [pass, setPass] = useState(null);
+  const [userID, setUserID] = useState(null);
 
   const signIn = (e) => {
     e.preventDefault();
@@ -45,9 +46,27 @@ function SignInWithAthleteLink() {
       .auth()
       .signInWithEmailAndPassword(email, pass)
       .then((userCredential) => {
+        setUserID(userCredential.user.uid)
         dispatch({
           type: actionTypes.SET_USER,
           user: userCredential.user.uid,
+        });
+        return userCredential
+      }).then((data) => {
+        axios.get(`http://localhost:3001/getNewUserFlag?uid=${data.user.uid}`)
+        .then(response => {
+          const newUserFlag = response.data[0]["flagNewUser"]
+          var regexPattern = new RegExp("true");
+          const boolValueNewUserFlag = regexPattern.test(newUserFlag);
+
+          dispatch({
+            type: actionTypes.SET_NEW_USER_FLAG,
+            newUserFlag: boolValueNewUserFlag,
+          });
+          console.log(`The user's newUserFlag is set to ${newUserFlag}`);
+        })
+        .catch(error => {
+          console.error(error);
         });
       })
       .catch((error) => {

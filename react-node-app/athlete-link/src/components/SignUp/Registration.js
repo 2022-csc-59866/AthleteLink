@@ -52,7 +52,23 @@ function Registration() {
         dispatch({
           type: actionTypes.SET_USER,
           user: auth.data.uid,
-        })}).catch(error => console.error("Error while creating user", error))}
+        })
+        return auth.data
+      }).then((data) => {
+           axios.get(`http://localhost:3001/getNewUserFlag?uid=${data.uid}`)
+        .then(response => {
+          const newUserFlag = response.data[0]["flagNewUser"]
+          var regexPattern = new RegExp("true");
+          const boolValueNewUserFlag = regexPattern.test(newUserFlag);
+
+          dispatch({
+            type: actionTypes.SET_NEW_USER_FLAG,
+            newUserFlag: boolValueNewUserFlag,
+          });
+          console.log(`The user's newUserFlag is set to ${newUserFlag}`);
+        })
+        })
+        .catch(error => console.error("Error while creating user", error))}
   
   return (
     <div className="register__outterContainer">

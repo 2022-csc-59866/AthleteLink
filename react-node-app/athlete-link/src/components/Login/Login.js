@@ -14,33 +14,25 @@ function Login() {
   const [lat, setLat] = useState(null);
   const [long, setLong] = useState(null);
   
-  const signInGoogle = () => {
-    auth
-      .signInWithPopup(provider)
-      .then((result) => {
-        dispatch({
-          type: actionTypes.SET_USER,
-          user: result.user,
-        });
-      })
-      .catch((error) => alert(error.message));
-  };
+  // const signInGoogle = () => {
+  //   auth
+  //     .signInWithPopup(provider)
+  //     .then((result) => {
+  //       dispatch({
+  //         type: actionTypes.SET_USER,
+  //         user: result.user,
+  //       });
+  //     })
+  //     .catch((error) => alert(error.message));
+  // };
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      if (position) {
-        setLat(position.coords.latitude);
-        setLong(position.coords.longitude);
-      }
-    });
-  }, []);
 
   return (
     <div className="login">
       <div className="login__container">
         <img src={logo} alt="Athlete Link Logo" />
         <div className="login__text">
-          <h1>Sign in to Athlete Link</h1>
+          <h1>Sign in</h1>
         </div>
 
          
@@ -50,13 +42,13 @@ function Login() {
             <span>Sign In with Athlete Link</span>
           </div>
         </Link>
-        <div className="login__withGoogle" onClick={signInGoogle}>
-          <img
+        {/* <div className="login__withGoogle" onClick={signInGoogle}> */}
+          {/* <img
             src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-webinar-optimizing-for-success-google-business-webinar-13.png"
             alt="Google Logo"
           />
-        <span>Sign In with Google</span>
-        </div>
+        <span>Sign In with Google</span> */}
+        {/* </div> */}
           <Link to="/signup">
             <div className="login__withGoogle">
               <div>Dont have an Account? Sign Up Here.</div>
