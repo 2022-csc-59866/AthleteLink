@@ -223,78 +223,6 @@ const Onboarding = () => {
     console.log(selectedCardImg);
   };
 
-  let profilesLiked = new Set();
-  let profilesLikedMe = new Set();
-  let profilesDisliked = new Set();
-  let profilesRemoved = new Set();
-
-  const setLikedArray = async (uid) => {
-    // const snapshot = await database
-    //   .collection("people")
-    //   .doc(uid)
-    //   .collection("profilesLiked")
-    //   .get();
-    // return snapshot.docs.map((doc) => profilesLiked.add(doc.data().uid));
-  };
-  const setLikedMeArray = async (uid) => {
-    // const snapshot = await database
-    //   .collection("people")
-    //   .doc(uid)
-    //   .collection("profilesLikedMe")
-    //   .get();
-    // return snapshot.docs.map((doc) => profilesLikedMe.add(doc.data().uid));
-  };
-  const setDislikesArray = async (uid) => {
-    // const snapshot = await database
-    //   .collection("people")
-    //   .doc(uid)
-    //   .collection("dislikes")
-    //   .get();
-    // return snapshot.docs.map((doc) => profilesDisliked.add(doc.data().uid));
-  };
-
-  // addToast("Profile Updated Successfully", {
-  //   appearance: "success",
-  // });
-
-  // setLikedArray(user.uid).then(
-  //   setLikedMeArray(user.uid).then(
-  //     setDislikesArray(user.uid).then(() => {
-  //       profilesRemoved = [
-  //         ...profilesDisliked,
-  //         ...profilesLiked,
-  //       ];
-  //       let matches = new Set(
-  //         [...profilesLiked].filter((x) =>
-  //           profilesLikedMe.has(x)
-  //         )
-  //       );
-
-  // dispatch({
-  //   type: actionTypes.SET_LIKES,
-  //   likes: profilesLiked,
-  // });
-  // dispatch({
-  //   type: actionTypes.SET_DISLIKES,
-  //   dislikes: profilesDisliked,
-  // });
-  // dispatch({
-  //   type: actionTypes.SET_LIKESME,
-  //   likesme: profilesLikedMe,
-  // });
-  // dispatch({
-  //   type: actionTypes.SET_USER,
-  //   user: user,
-  // });
-  // dispatch({
-  //   type: actionTypes.SET_MATCHES,
-  //   matches: matches,
-  // });
-  // })
-  // )
-  // );
-  // setRedirect(true);
-
   const checkImg = () => {
     if (!selectedCardImg && !selectedProfileImg) {
       addToast("Please select Profile and Card Images", {
@@ -388,6 +316,11 @@ const Onboarding = () => {
 
       await submitOnboardingData(onboardingData);
       await disableNewUserFlag(user);
+
+      dispatch({
+        type: actionTypes.SET_NEW_USER_FLAG,
+        newUserFlag: false,
+      });
 
       addToast("Successfully Saved Data", { appearance: "success" });
     } catch (error) {
