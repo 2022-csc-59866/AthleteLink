@@ -426,7 +426,7 @@ const Onboarding = () => {
         <div className="edit__innerContainer">
           <form className={classes.root2} onSubmit={updateProfile}>
             <Box m={2} pb={1}>
-              <h1 className="edit__header">Welcome To Gym Mate</h1>
+              <h1 className="edit__header">Welcome To Athlete Link</h1>
             </Box>
             <TextField
               onChange={(e) => setUserName(e.target.value)}
@@ -635,7 +635,7 @@ const Onboarding = () => {
                 className={classes.buttonSave}
                 startIcon={<SaveIcon />}
               >
-                Start Using GymMate
+                Start Using Athlete Link
               </Button>
             </div>
           </form>
