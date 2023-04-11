@@ -3,6 +3,8 @@ import Header from "./components/Header/Header";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import AthleteLinkCards from "./components/Cards/AthleteLinkCard";
 import "./App.css";
+import { ToastProvider } from "react-toast-notifications";
+
 import SwipeButtons from "./SwipeButtons";
 import Chats from "./components/Chat/Chats";
 import ChatScreen from "./components/Chat/ChatScreen";
@@ -12,21 +14,26 @@ import MyProfile from "./components/MyProfile/MyProfile";
 import NewUser from "./components/NewUser/NewUser";
 import Registration from "./components/SignUp/Registration";
 import SignInWithAthleteLink from "./components/SignIn/SignInWithAthleteLink";
-import OnboardingWizard from "./components/Onboarding/OnboardingWizard";
+// import OnboardingWizard from "./components/Onboarding/OnboardingWizard";
+import Onboarding from "./components/Onboarding/Onboarding";
+// import Map from "./components/MapContainer/MapContainer";
+// import MapContainer from "./components/MapContainer/MapContainer";
+
 function App() {
   const [{ user,  newUserFlag}, dispatch] = useStateValue();
 
-  const [data, setData] = React.useState(null);
+  // const [data, setData] = React.useState(null);
 
-  React.useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message));
-  }, []);
+  // React.useEffect(() => {
+    // fetch("/api")
+    //   .then((res) => res.json())
+    //   .then((data) => setData(data.message));
+  // }, []);
 
   return (
+    <ToastProvider autoDismiss autoDismissTimeout="3000">
+
     <div className="App">
-      {console.log(data)}
       {!user ? (
         <Router>
           <Switch>
@@ -37,7 +44,8 @@ function App() {
               <Registration />
             </Route>
             <Route path="/onboarding">
-              <OnboardingWizard/>
+              {/* <OnboardingWizard/> */}
+              <Onboarding/>
             </Route>
             <Route path="/">
               <Login />
@@ -46,7 +54,7 @@ function App() {
         </Router>
       ) : (
         newUserFlag ? (
-          <OnboardingWizard/>
+          <Onboarding/>
         ) : (
           <Router>
           <Switch>
@@ -67,7 +75,9 @@ function App() {
             </Route>
             <Route path="/">
               <Header />
-              <AthleteLinkCards/>
+               {/* <AthleteLinkCards/> */}
+               
+               {/* <MapContainer/> */}
               <SwipeButtons />
             </Route>
           </Switch>
@@ -76,6 +86,7 @@ function App() {
         
       )}
     </div>
+     </ToastProvider>
   );
 }
 

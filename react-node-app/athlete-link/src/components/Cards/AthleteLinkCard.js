@@ -10,7 +10,7 @@ const AthleteLinkCards = () => {
   });
   useEffect(() => {
     const unsubscribe = database
-      .collection("people")
+      .collection("users")
       .onSnapshot((snapshot) =>
         setPeople(snapshot.docs.map((doc) => doc.data()))
       );

@@ -161,17 +161,9 @@ const OnboardingWizard = () => {
     }
   };
 
-   const handleSuggestionClick = (suggestion) => {
-    setLocation(suggestion.place_name);
-    setSuggestions([]);
-  }
+   
 
-  const { formRef, showConfirm } = useConfirmAddress({
-    minimap: true,
-    skipConfirmModal: (feature) => {
-    ['exact', 'high'].includes(feature.properties.match_code.confidence)
-    }
-  });
+ 
 
   useEffect(() => {
     const accessToken = process.env.REACT_APP_MAP_TOKEN;
@@ -188,15 +180,7 @@ const OnboardingWizard = () => {
     [setFeature, setShowMinimap]
   );
  
-  function handleSaveMarkerLocation(coordinate) {
-    console.log(`Marker moved to ${JSON.stringify(coordinate)}.`)
-  }
-  function submitForm() {
-    setShowValidationText(true);
-    setTimeout(() => {
-    resetForm();
-    }, 2500);
-  }
+  
 
    const handleKeyPress = (event) => {
     const pattern = /^[a-z0-9]*$/; // Regular expression to match lowercase letters

@@ -3,21 +3,21 @@ import axios from 'axios';
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useStateValue } from "../../StateProvider";
-import firebase from 'firebase/compat/app';
-import {database} from "../../firebase";
+// import firebase from 'firebase/compat/app';
+// import {database} from "../../firebase";
 import Box from "@material-ui/core/Box";
-import CardContent from "@material-ui/core/CardContent";
-import Fab from "@material-ui/core/Fab";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+// import CardContent from "@material-ui/core/CardContent";
+// import Fab from "@material-ui/core/Fab";
+// import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
-import { auth } from "../../firebase";
-import { provider } from "../../firebase";
+// import { auth } from "../../firebase";
+// import { provider } from "../../firebase";
 import { actionTypes } from "../../reducer";
 import { emphasize, makeStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import logo from "../../assets/logo-black.png";
+// import logo from "../../assets/logo-black.png";
 import "./Registration.css";
-import { func } from "prop-types";
+// import { func } from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
   root: {

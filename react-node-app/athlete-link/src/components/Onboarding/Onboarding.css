@@ -1,0 +1,27 @@
+.edit__outterContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 5vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.edit__innerContainer {
+  position: relative;
+  width: 800px;
+  overflow: auto;
+  padding: 20px;
+  max-width: 90vw;
+  height: 85vh;
+  border-radius: 20px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0px 18px 53px 0px rgba(0, 0, 0, 0.3);
+}
+
+.edit__header {
+  color: #e75480;
+}

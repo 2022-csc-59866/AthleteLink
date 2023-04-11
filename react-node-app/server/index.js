@@ -1,115 +1,236 @@
 const express = require("express");
-const cors = require('cors')
+const cors = require("cors");
 const PORT = process.env.PORT || 3001;
 const admin = require("firebase-admin");
-const {db} = require('./config')
-const app = express();
-const bp = require('body-parser')
+const { db } = require("./config");
 
-app.use(bp.json())
-app.use(bp.urlencoded({ extended: true }))
+const bp = require("body-parser");
+const saltedMd5 = require("salted-md5");
+const axios = require("axios");
+const multer = require("multer");
+
+const app = express();
+app.use(bp.json());
+app.use(bp.urlencoded({ extended: true }));
 app.use(cors());
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
+const bucket = admin.storage().bucket();
 
 app.get("/", (req, res) => {
   res.json({ message: "sup dude from server!" });
 });
 
-app.get('/getNewUserFlag', (req, res) => {
+app.post("/uploadProfileImage", upload.single("image"), async (req, res) => {
+  if (!req.file) {
+    console.log("No file sent");
+    res.status(400).send("No file uploaded.");
+    return;
+  }
+  if (!req.body.userID) {
+    console.log("No user id sent");
+    res.status(400).send("No USERID sent.");
+    return;
+  }
+  const userID = req.body.userID;
+
+  const { originalname, buffer } = req.file;
+
+  // Define your custom path here. For example, you can use the user ID or any other identifier:
+  const folderPath = `users/${userID}/profileImage`;
+
+  // const customPath = folderPath + originalname;
+  const file = bucket.file(folderPath);
+  const options = {
+    metadata: {
+      contentType: "image/jpeg",
+    },
+    public: true,
+  };
+
+  try {
+    await file.save(buffer, options);
+    const url = `https://firebasestorage.googleapis.com/v0/b/${
+      bucket.name
+    }/o/${encodeURIComponent(folderPath)}?alt=media`;
+    res.status(201).send(url);
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    res.status(500).send("Error uploading file.");
+  }
+});
+
+app.post("/uploadCardImage", upload.single("image"), async (req, res) => {
+  if (!req.file) {
+    console.log("No file sent");
+    res.status(400).send("No file uploaded.");
+    return;
+  }
+  if (!req.body.userID) {
+    console.log("No user id sent");
+    res.status(400).send("No USERID sent.");
+    return;
+  }
+  const userID = req.body.userID;
+
+  const { originalname, buffer } = req.file;
+
+  // Define your custom path here. For example, you can use the user ID or any other identifier:
+  const folderPath = `users/${userID}/cardImage`;
+
+  // const customPath = folderPath + originalname;
+  const file = bucket.file(folderPath);
+  const options = {
+    metadata: {
+      contentType: "image/jpeg",
+    },
+    public: true,
+  };
+
+  try {
+    await file.save(buffer, options);
+    const url = `https://firebasestorage.googleapis.com/v0/b/${
+      bucket.name
+    }/o/${encodeURIComponent(folderPath)}?alt=media`;
+    res.status(201).send(url);
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    res.status(500).send("Error uploading file.");
+  }
+});
+
+app.get("/getNewUserFlag", (req, res) => {
   const uid = req.query.uid; // assuming the user ID is passed in the query string
-  userRef = db.collection("users")
-  userRef.where('uid', '==', uid).get().then(snapshot => {
+  userRef = db.collection("users");
+  userRef
+    .where("uid", "==", uid)
+    .get()
+    .then((snapshot) => {
       const data = [];
-      snapshot.forEach(doc => {
+      snapshot.forEach((doc) => {
         data.push({ id: doc.id, ...doc.data() });
       });
       res.status(200).json(data);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
-      res.status(500).json({ error: 'Failed to retrieve data' });
+      res.status(500).json({ error: "Failed to retrieve data" });
     });
-  
 });
 
-app.get('/checkUsernameAvailability', (req, res) => {
+app.get("/checkUsernameAvailability", (req, res) => {
   const username = req.query.username; // assuming the user ID is passed in the query string
-  userRef = db.collection("users")
-  userRef.where('username', '==', username).get().then(snapshot => {
+  userRef = db.collection("users");
+  userRef
+    .where("username", "==", username)
+    .get()
+    .then((snapshot) => {
       const data = [];
-      snapshot.forEach(doc => {
+      snapshot.forEach((doc) => {
         data.push({ id: doc.id, ...doc.data() });
       });
-      if(data.length > 0){
-        res.status(200).json({isAvailable: false});
-      }else{
-        res.status(200).json({isAvailable: true});
+      if (data.length > 0) {
+        res.status(200).json({ isAvailable: false });
+      } else {
+        res.status(200).json({ isAvailable: true });
       }
-      
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
-      res.status(500).json({ error: 'Failed to retrieve data' });
+      res.status(500).json({ error: "Failed to retrieve data" });
     });
-  
 });
 
-
-
-app.post('/api/create-user', async (req, res) => {
+app.post("/api/create-user", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const userRecord = await admin.auth().createUser({
       email,
       password,
-    })
-  
-    try{
+    });
+
+    try {
       const newUser = {
         uid: userRecord.uid,
         email: userRecord.email,
-        flagNewUser: true
-      }
-      await db.collection("users").doc(newUser.uid).set(newUser)
-      console.log("data creaeted successfully.")
+        flagNewUser: true,
+      };
+      await db.collection("users").doc(newUser.uid).set(newUser);
+      console.log("data creaeted successfully.");
       // res.status(201).send('Document created successfully');
-    }catch (error){
-      console.log('User created successfully!');
-      console.error('Error creating user: ', error);
+    } catch (error) {
+      console.log("User created successfully!");
+      console.error("Error creating user: ", error);
     }
 
     res.status(201).json(userRecord);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Something went wrong' });
+    res.status(500).json({ error: "Something went wrong" });
   }
 });
-app.post('/api/onboarding', async (req, res) => {
-    const { firstName, lastName, gender, age, location, userID, username } = req.body;
-    const updateData = {
-      firstName,lastName,gender,age,location,username
-    };
 
-    console.log("UIDD IS PRINTED HERE", userID,firstName,lastName)
-    docRef = db.collection("users").doc(userID)
-    try{
-      docRef.update(updateData)
-        try{
-          docRef.update({flagNewUser:false})
-        }catch(error){
-        console.log("error when updating newUserFlag in onboarding", error)
-      }}catch(error){
-        onsole.log("error when updating newUserFlag in onboarding", error)
-      }
-    });
+app.post("/api/onboarding", async (req, res) => {
+  const {
+    userID,
+    username,
+    bio,
+    age,
+    zipcode,
+    profileImgUrl,
+    cardImgUrl,
+    sports,
+    location,
+    profilesLiked,
+    profilesLikedMe,
+    matches,
+  } = req.body;
 
+  const onboardingData = {
+    userID,
+    username,
+    bio,
+    age,
+    zipcode,
+    profileImgUrl,
+    cardImgUrl,
+    sports,
+    location,
+    profilesLiked,
+    profilesLikedMe,
+    matches,
+  };
+
+  try {
+    const docRef = db.collection("users").doc(userID);
+    await docRef.update(onboardingData);
+
+    res.status(200).send({ message: "Onboarding data successfully saved." });
+  } catch (error) {
+    console.error("Error saving onboarding data:", error);
+    res.status(500).send({ message: "Error saving onboarding data.", error });
+  }
+});
+
+app.post("/api/disableNewUserFlag", async (req, res) => {
+  const { userID } = req.body;
+
+  docRef = db.collection("users").doc(userID);
+  try {
+    await docRef.update({ flagNewUser: false });
+    res.status(200).send({ message: "New user flag successfully disabled." });
+  } catch (error) {
+    console.log("error when updating newUserFlag in onboarding", error);
+    res.status(500).send({ message: "Error disabling new user flag.", error });
+  }
+});
 
 app.get("/", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
