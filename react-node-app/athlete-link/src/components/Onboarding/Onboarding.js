@@ -141,16 +141,20 @@ const MenuProps = {
 };
 
 const names = [
+  "Baseball",
+  "Basketball",
+  "Boxing",
+  "Calisthenics",
+  "Gymnastics",
+  "Soccer",
+  "Swimming",
+  "Tennis",
+  "Track and Field",
+  "Volleyball",
   "Weightlifting",
   "Wrestling",
-  "Boxing",
-  "Gymnastics",
-  "Calisthenics",
-  "Basketball",
-  "Soccer",
-  "Track and Field",
-  "Swimming",
 ];
+
 const genderNames = ["Male", "Female", "Other"];
 
 function getStyles(name, sports, theme) {
@@ -173,7 +177,7 @@ const Onboarding = () => {
   const [selectedProfileImg, setSelectedProfileImg] = useState(null);
   const [selectedCardImg, setSelectedCardImg] = useState(null);
   const [lat, setLat] = useState(null);
-  const [long, setLong] = useState(null);
+  const [lng, setlng] = useState(null);
   const [sports, setSports] = React.useState([]);
   const [gender, setGender] = React.useState(null);
   const [isAvailable, setIsAvailable] = useState(null);
@@ -240,17 +244,15 @@ const Onboarding = () => {
     try {
       navigator.geolocation.getCurrentPosition(function (position) {
         setLat(position.coords.latitude);
-        setLong(position.coords.longitude);
+        setlng(position.coords.longitude);
       });
     } catch (error) {
       addToast(
         "Cannot get users geolocation - Setting default location to NYC",
         { appearance: "warning" }
       );
-      navigator.geolocation.getCurrentPosition(function (position) {
-        setLat(position.coords.latitude);
-        setLong(position.coords.longitude);
-      });
+      setLat("40.7128");
+      setlng("74.006");
     }
   }, []);
 
@@ -293,20 +295,22 @@ const Onboarding = () => {
       const imageUrl2 = cardImageResponse.data;
       console.log("Card Image URL:", imageUrl2);
       setCardImageURL(imageUrl2);
+      const userLocation = new firebase.firestore.GeoPoint(
+        parseInt(lat),
+        parseInt(lng)
+      );
 
       const onboardingData = {
         userID: user,
         username: username,
         bio: bio,
         age: age,
+        gender: gender,
         zipcode: zipcode,
         profileImgUrl: profileImgURL,
         cardImgUrl: cardlImageURL,
         sports: sports,
-        location: {
-          lat: lat,
-          long: long,
-        },
+        location: userLocation,
         profilesLiked: [],
         profilesLikedMe: [],
         matches: [],

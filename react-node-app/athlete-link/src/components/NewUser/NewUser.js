@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useStateValue } from "../../StateProvider";
-import {database} from "../../firebase";
+import { database } from "../../firebase";
 
 import SaveIcon from "@mui/icons-material/Save";
 const useStyles = makeStyles((theme) => ({
@@ -48,10 +48,8 @@ const NewUser = () => {
           firstName: firstName,
           lastName: lastName,
           age: age,
-          location: {
-            lat: lat,
-            long: long,
-          },
+          lat: lat,
+          long: long,
         })
         .then(() => {
           console.log("Document successfully written!");
