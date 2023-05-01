@@ -9,25 +9,6 @@ const AthleteLinkCards = (props) => {
   const [currentPerson, setCurrentPerson] = useState({
     name: "initialName",
   });
-  // useEffect(() => {
-  //   const unsubscribe = database
-  //     .collection("users")
-  //     .onSnapshot((snapshot) =>
-  //       setPeople(snapshot.docs.map((doc) => doc.data()))
-  //     );
-  //   return () => {
-  //     // cleanup
-  //     unsubscribe();
-  //   };
-  // }, []);
-
-  // const cardStyle = {
-  //   display: "flex",
-  //   flexDirection: "column",
-  //   justifyContent: "flex-end",
-  //   height: "100%",
-  //   padding: "1rem",
-  // };
 
   const contentStyle = {
     display: "flex",
@@ -83,10 +64,7 @@ const AthleteLinkCards = (props) => {
                       }
                 }
                 className="card"
-              >
-                {/* <h3>{person.data.username}</h3> */}
-                {/* <h3>{person.data.bio}</h3> */}
-              </div>
+              ></div>
               <div style={contentStyle} className="card_bottom">
                 <h2 style={titleStyle}>{person.data.username}</h2>
                 <p>

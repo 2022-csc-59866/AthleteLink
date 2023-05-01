@@ -214,6 +214,54 @@ app.post("/api/onboarding", async (req, res) => {
     res.status(500).send({ message: "Error saving onboarding data.", error });
   }
 });
+const filterUndefinedProperties = (obj) => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, v]) => v !== undefined && v !== null)
+  );
+};
+
+app.post("/api/updateProfile", async (req, res) => {
+  const {
+    userID,
+    username,
+    bio,
+    age,
+    zipcode,
+    profileImgUrl,
+    cardImgUrl,
+    sports,
+    location,
+    profilesLiked,
+    profilesLikedMe,
+    matches,
+  } = req.body;
+
+  const onboardingData = filterUndefinedProperties({
+    userID,
+    username,
+    bio,
+    age,
+    zipcode,
+    profileImgUrl,
+    cardImgUrl,
+    sports,
+    location,
+    profilesLiked,
+    profilesLikedMe,
+    matches,
+  });
+  console.log(onboardingData);
+
+  try {
+    const docRef = db.collection("users").doc(userID);
+    await docRef.update(onboardingData);
+
+    res.status(200).send({ message: "Onboarding data successfully saved." });
+  } catch (error) {
+    console.error("Error saving onboarding data:", error);
+    res.status(500).send({ message: "Error saving onboarding data.", error });
+  }
+});
 
 app.post("/api/disableNewUserFlag", async (req, res) => {
   const { userID } = req.body;

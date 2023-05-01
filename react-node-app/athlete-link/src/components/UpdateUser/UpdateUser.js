@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useToasts } from "react-toast-notifications";
 import { Redirect } from "react-router";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -21,6 +21,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import { actionTypes } from "../../reducer";
 import { Box } from "@material-ui/core";
 import { Link } from "react-router-dom";
+
 import "./UpdateUser.css";
 import axios from "axios";
 import debounce from "lodash/debounce";
@@ -168,7 +169,7 @@ function getStyles(name, sports, theme) {
 
 const UpdateUser = () => {
   const { addToast } = useToasts();
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user, userData }, dispatch] = useStateValue();
   const classes = useStyles();
   const [username, setUserName] = useState(null);
   const [bio, setBio] = useState(null);
@@ -183,6 +184,7 @@ const UpdateUser = () => {
   const [isAvailable, setIsAvailable] = useState(null);
   const [cardlImageURL, setCardImageURL] = useState("");
   const [profileImgURL, setProfileImageURL] = useState("");
+  const formRef = useRef();
 
   const checkAvailability = debounce(async (usernameProp) => {
     axios
@@ -227,20 +229,11 @@ const UpdateUser = () => {
     console.log(selectedCardImg);
   };
 
-  const checkImg = () => {
-    if (!selectedCardImg && !selectedProfileImg) {
-      addToast("Please select Profile and Card Images", {
-        appearance: "error",
-      });
-    } else if (!selectedCardImg) {
-      addToast("Please select Card Image", { appearance: "error" });
-    } else if (!selectedProfileImg) {
-      addToast("Please select Profile Image", { appearance: "error" });
-    }
-  };
-
   useEffect(() => {
-    checkAvailability(user);
+    console.log(userData);
+    if (username) {
+      checkAvailability(username);
+    }
     try {
       navigator.geolocation.getCurrentPosition(function (position) {
         setLat(position.coords.latitude);
@@ -259,11 +252,11 @@ const UpdateUser = () => {
   const updateProfile = async (e) => {
     e.preventDefault();
     var isValidZip = /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zipcode);
-    if (!isValidZip) {
+    if (zipcode && !isValidZip) {
       addToast("Invalid Zipcode", { appearance: "error" });
       return;
     }
-    if (!isAvailable) {
+    if (username && !isAvailable) {
       addToast("Username Taken, Please choose a different one", {
         appearance: "error",
       });
@@ -272,77 +265,70 @@ const UpdateUser = () => {
 
     try {
       const formDataProfile = new FormData();
-      formDataProfile.append("image", selectedProfileImg);
-      formDataProfile.append("userID", user);
-      console.log("USER ID FROM FRONT END", user);
-
-      const profileImageResponse = await axios.post(
-        "http://localhost:3001/uploadProfileImage",
-        formDataProfile
-      );
-
-      const formDataCard = new FormData();
-      formDataCard.append("image", selectedCardImg);
-      formDataCard.append("userID", user);
-
-      const cardImageResponse = await axios.post(
-        "http://localhost:3001/uploadCardImage",
-        formDataCard
-      );
-      const imageUrl2 = cardImageResponse.data;
       const userLocation = new firebase.firestore.GeoPoint(
         parseInt(lat),
         parseInt(lng)
       );
-
       const onboardingData = {
         userID: user,
-        username: username,
-        bio: bio,
-        age: age,
-        gender: gender,
-        zipcode: zipcode,
-        profileImgUrl: profileImageResponse.data,
-        cardImgUrl: cardImageResponse.data,
-        sports: sports,
         location: userLocation,
-        profilesLiked: [],
-        profilesLikedMe: [],
-        matches: [],
       };
-      console.log("profile image url", profileImgURL, cardlImageURL);
-      console.log("onboarding data", onboardingData);
+
+      if (username) {
+        onboardingData["username"] = username;
+      }
+      if (zipcode) {
+        onboardingData["zipcode"] = zipcode;
+      }
+      if (gender) {
+        onboardingData["gender"] = gender;
+      }
+      if (sports) {
+        if (sports.length != 0) {
+          onboardingData["sports"] = sports;
+        }
+      }
+      if (bio) {
+        onboardingData["bio"] = bio;
+      }
+      if (age) {
+        onboardingData["age"] = age;
+      }
+
+      if (selectedProfileImg) {
+        formDataProfile.append("userID", user);
+        formDataProfile.append("image", selectedProfileImg);
+        const profileImageResponse = await axios.post(
+          "http://localhost:3001/uploadProfileImage",
+          formDataProfile
+        );
+        onboardingData["profileImgUrl"] = profileImageResponse.data;
+      }
+      if (selectedCardImg) {
+        const formDataCard = new FormData();
+        formDataCard.append("image", selectedCardImg);
+        formDataCard.append("userID", user);
+
+        const cardImageResponse = await axios.post(
+          "http://localhost:3001/uploadCardImage",
+          formDataCard
+        );
+        onboardingData["cardImgUrl"] = cardImageResponse.data;
+      }
 
       await submitOnboardingData(onboardingData);
-      await disableNewUserFlag(user);
-
-      dispatch({
-        type: actionTypes.SET_NEW_USER_FLAG,
-        newUserFlag: false,
-      });
 
       addToast("Successfully Saved Data", { appearance: "success" });
+      formRef.current.reset();
     } catch (error) {
       addToast(error.message, { appearance: "error" });
-    }
-  };
-
-  const disableNewUserFlag = async (userID) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/api/disableNewUserFlag",
-        { userID }
-      );
-      console.log(response.data.message); // You can use the response data as needed
-    } catch (error) {
-      console.error("Error disabling new user flag:", error);
     }
   };
 
   const submitOnboardingData = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/onboarding",
+        "http://localhost:3001/api/updateProfile",
         data
       );
       // Handle the response as needed
@@ -356,9 +342,13 @@ const UpdateUser = () => {
       {redirect ? <Redirect push to="/myprofile" /> : null}
       <div className="edit__outterContainer">
         <div className="edit__innerContainer">
-          <form className={classes.root2} onSubmit={updateProfile}>
+          <form
+            className={classes.root2}
+            onSubmit={updateProfile}
+            ref={formRef}
+          >
             <Box m={2} pb={1}>
-              <h1 className="edit__header">Welcome To Athlete Link</h1>
+              <h1 className="edit__header">Welcome Back {userData.username}</h1>
             </Box>
             <TextField
               onChange={(e) => setUserName(e.target.value)}
@@ -375,7 +365,6 @@ const UpdateUser = () => {
               InputLabelProps={{
                 style: { color: "#e75480" },
               }}
-              required
             />
             <TextField
               onChange={(e) => setBio(e.target.value)}
@@ -393,7 +382,6 @@ const UpdateUser = () => {
               InputLabelProps={{
                 style: { color: "#e75480" },
               }}
-              required
             />
 
             <TextField
@@ -415,7 +403,6 @@ const UpdateUser = () => {
               InputLabelProps={{
                 style: { color: "#e75480" },
               }}
-              required
             />
             <TextField
               label="ZipCode"
@@ -436,7 +423,6 @@ const UpdateUser = () => {
               InputLabelProps={{
                 style: { color: "#e75480" },
               }}
-              required
             />
             <h4 className="edit__header">
               Select All of Your Sports Interests
@@ -514,7 +500,6 @@ const UpdateUser = () => {
                 multiple
                 type="file"
                 onChange={handleProfileImgUploadClick}
-                required
               />
               <label htmlFor="contained-button-file">
                 <Fab
@@ -539,7 +524,6 @@ const UpdateUser = () => {
                 multiple
                 type="file"
                 onChange={handleCardImgUploadClick}
-                required
               />
               <label htmlFor="contained-button-file-card">
                 <Fab
@@ -562,7 +546,6 @@ const UpdateUser = () => {
                 variant="contained"
                 color="primary"
                 size="large"
-                onClick={checkImg}
                 onSubmit={updateProfile}
                 className={classes.buttonSave}
                 startIcon={<SaveIcon />}
