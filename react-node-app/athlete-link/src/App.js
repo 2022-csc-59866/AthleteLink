@@ -10,26 +10,13 @@ import Chats from "./components/Chat/Chats";
 import ChatScreen from "./components/Chat/ChatScreen";
 import Login from "./components/Login/Login";
 import { useStateValue } from "./StateProvider";
-import MyProfile from "./components/MyProfile/MyProfile";
-import NewUser from "./components/NewUser/NewUser";
 import Registration from "./components/SignUp/Registration";
 import SignInWithAthleteLink from "./components/SignIn/SignInWithAthleteLink";
-// import OnboardingWizard from "./components/Onboarding/OnboardingWizard";
 import Onboarding from "./components/Onboarding/Onboarding";
-// import Map from "./components/MapContainer/MapContainer";
-// import MapContainer from "./components/MapContainer/MapContainer";
-
+import UpdateUser from "./components/UpdateUser/UpdateUser";
 function App() {
   const [{ user, newUserFlag }, dispatch] = useStateValue();
   const [filteredData, setFilteredData] = useState([]);
-
-  // const [data, setData] = React.useState(null);
-
-  // React.useEffect(() => {
-  // fetch("/api")
-  //   .then((res) => res.json())
-  //   .then((data) => setData(data.message));
-  // }, []);
 
   return (
     <ToastProvider autoDismiss autoDismissTimeout="3000">
@@ -44,7 +31,6 @@ function App() {
                 <Registration />
               </Route>
               <Route path="/onboarding">
-                {/* <OnboardingWizard/> */}
                 <Onboarding />
               </Route>
               <Route path="/">
@@ -59,7 +45,7 @@ function App() {
             <Switch>
               <Route path="/myprofile">
                 <Header backButton="/" />
-                <MyProfile />
+                <UpdateUser />
               </Route>
               <Route path="/chat/:person">
                 <Header backButton="/chat" />

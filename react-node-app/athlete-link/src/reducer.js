@@ -1,5 +1,6 @@
 export const initialState = {
   user: null,
+  userData: null,
   matches: null,
   likes: null,
   likesme: null,
@@ -9,6 +10,7 @@ export const initialState = {
 
 export const actionTypes = {
   SET_USER: "SET_USER",
+  SET_USER_DATA: "SET_USER_DATA",
   SET_MATCHES: "SET_MATCHES",
   SET_LIKES: "SET_LIKES",
   SET_DISLIKES: "SET_DISLIKES",
@@ -23,6 +25,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         user: action.user,
+      };
+    case actionTypes.SET_USER_DATA:
+      return {
+        ...state,
+        userData: action.userData,
       };
     case actionTypes.SET_NEW_USER_FLAG:
       return {

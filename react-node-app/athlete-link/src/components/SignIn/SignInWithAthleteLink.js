@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useStateValue } from "../../StateProvider";
-import firebase from 'firebase/compat/app';
+import firebase from "firebase/compat/app";
 import Box from "@material-ui/core/Box";
 
 import { actionTypes } from "../../reducer";
@@ -11,6 +11,7 @@ import { makeStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import "./SignInWithAthleteLink.css";
 import axios from "axios";
+import { getUserData } from "../../api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,40 +35,54 @@ const useStyles = makeStyles((theme) => ({
 
 function SignInWithAthleteLink() {
   const classes = useStyles();
-  const [{user} , dispatch] = useStateValue();
+  const [{ user }, dispatch] = useStateValue();
   const [email, setEmail] = useState(null);
   const [pass, setPass] = useState(null);
   const [userID, setUserID] = useState(null);
 
   const signIn = (e) => {
     e.preventDefault();
-    
+
     firebase
       .auth()
       .signInWithEmailAndPassword(email, pass)
       .then((userCredential) => {
-        setUserID(userCredential.user.uid)
+        setUserID(userCredential.user.uid);
         dispatch({
           type: actionTypes.SET_USER,
           user: userCredential.user.uid,
         });
-        return userCredential
-      }).then((data) => {
-        axios.get(`http://localhost:3001/getNewUserFlag?uid=${data.user.uid}`)
-        .then(response => {
-          const newUserFlag = response.data[0]["flagNewUser"]
-          var regexPattern = new RegExp("true");
-          const boolValueNewUserFlag = regexPattern.test(newUserFlag);
+        return userCredential;
+      })
+      .then((data) => {
+        axios
+          .get(`http://localhost:3001/getNewUserFlag?uid=${data.user.uid}`)
+          .then((response) => {
+            const newUserFlag = response.data[0]["flagNewUser"];
+            var regexPattern = new RegExp("true");
+            const boolValueNewUserFlag = regexPattern.test(newUserFlag);
 
-          dispatch({
-            type: actionTypes.SET_NEW_USER_FLAG,
-            newUserFlag: boolValueNewUserFlag,
+            dispatch({
+              type: actionTypes.SET_NEW_USER_FLAG,
+              newUserFlag: boolValueNewUserFlag,
+            });
+            console.log(`The user's newUserFlag is set to ${newUserFlag}`);
+          })
+          .then(() => {
+            getUserData(data.user.uid).then((response) => {
+              console.log("RESULT GET USER DATA", response.data);
+              dispatch({
+                type: actionTypes.SET_USER_DATA,
+                userData: response.data,
+              });
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+          .catch((error) => {
+            console.error(error);
           });
-          console.log(`The user's newUserFlag is set to ${newUserFlag}`);
-        })
-        .catch(error => {
-          console.error(error);
-        });
       })
       .catch((error) => {
         var errorCode = error.code;

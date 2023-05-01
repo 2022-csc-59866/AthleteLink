@@ -228,6 +228,90 @@ app.post("/api/disableNewUserFlag", async (req, res) => {
   }
 });
 
+app.get("/api/getAllUsers", async (req, res) => {
+  const currentUserId = req.query.currentUserId;
+
+  try {
+    const usersRef = db.collection("users");
+    const snapshot = await usersRef.get();
+
+    let users = [];
+    snapshot.forEach((doc) => {
+      if (doc.id !== currentUserId) {
+        users.push({ id: doc.id, data: doc.data() });
+      }
+    });
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error retrieving users:", error);
+    res.status(500).json({ message: "Error retrieving users" });
+  }
+});
+
+// app.post("/api/filterUsersBySports", async (req, res) => {
+//   try {
+//     const selectedSports = req.body.selectedSports;
+//     const filteredUsers = await getUsersWithSelectedSports(selectedSports);
+//     res.json(filteredUsers);
+//   } catch (error) {
+//     res.status(500).send("Error filtering users by sports: " + error.message);
+//   }
+// });
+
+// async function getUsersWithSelectedSports(selectedSports) {
+//   const usersRef = db.collection("users");
+//   const usersQuery = usersRef.where(
+//     "sports",
+//     "array-contains-any",
+//     selectedSports
+//   );
+//   const querySnapshot = await usersQuery.get();
+
+//   const filteredUsers = [];
+//   querySnapshot.forEach((doc) => {
+//     filteredUsers.push({ id: doc.id, ...doc.data() });
+//   });
+
+//   return filteredUsers;
+// }
+app.post("/api/filterUsersBySports", async (req, res) => {
+  const { selectedSports, currentUserId } = req.body;
+  try {
+    const usersRef = db.collection("users");
+    const snapshot = await usersRef
+      .where("sports", "array-contains-any", selectedSports)
+      .get();
+
+    const filteredUsers = snapshot.docs
+      .map((doc) => ({ id: doc.id, data: doc.data() }))
+      .filter((user) => user.id !== currentUserId);
+
+    res.json(filteredUsers);
+  } catch (error) {
+    console.error("Error filtering users by sports:", error);
+    res.status(500).json({ message: "Failed to filter users by sports." });
+  }
+});
+
+app.get("/api/getUserData/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const userRef = db.collection("users").doc(userId);
+    const userDoc = await userRef.get();
+
+    if (userDoc.exists) {
+      res.json({ id: userDoc.id, data: userDoc.data() });
+    } else {
+      res.status(404).json({ message: "User not found." });
+    }
+  } catch (error) {
+    console.error("Error getting user data:", error);
+    res.status(500).json({ message: "Failed to get user data." });
+  }
+});
+
 app.get("/", (req, res) => {
   res.json({ message: "Hello from server!" });
 });

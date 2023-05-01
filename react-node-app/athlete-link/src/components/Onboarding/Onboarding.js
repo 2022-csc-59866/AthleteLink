@@ -280,9 +280,6 @@ const Onboarding = () => {
         "http://localhost:3001/uploadProfileImage",
         formDataProfile
       );
-      const imageUrl = profileImageResponse.data;
-      console.log("Profile Image URL:", imageUrl);
-      setProfileImageURL(imageUrl);
 
       const formDataCard = new FormData();
       formDataCard.append("image", selectedCardImg);
@@ -293,8 +290,6 @@ const Onboarding = () => {
         formDataCard
       );
       const imageUrl2 = cardImageResponse.data;
-      console.log("Card Image URL:", imageUrl2);
-      setCardImageURL(imageUrl2);
       const userLocation = new firebase.firestore.GeoPoint(
         parseInt(lat),
         parseInt(lng)
@@ -307,8 +302,8 @@ const Onboarding = () => {
         age: age,
         gender: gender,
         zipcode: zipcode,
-        profileImgUrl: profileImgURL,
-        cardImgUrl: cardlImageURL,
+        profileImgUrl: profileImageResponse.data,
+        cardImgUrl: cardImageResponse.data,
         sports: sports,
         location: userLocation,
         profilesLiked: [],

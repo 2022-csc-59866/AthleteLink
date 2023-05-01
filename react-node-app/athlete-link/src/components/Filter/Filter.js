@@ -15,6 +15,7 @@ import Snackbar from "@mui/material/Snackbar";
 import { firestore, geofirestore } from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/storage"; // <----
+import { useStateValue } from "../../StateProvider";
 
 import axios from "axios";
 
@@ -38,6 +39,7 @@ const Filter = ({ onApplyFilters }) => {
   const [distance, setDistance] = useState(10);
   const [showFilter, setShowFilter] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
+  const [{ user }, dispatch] = useStateValue();
 
   const handleSportChange = (event) => {
     setSelectedSports(event.target.value);
@@ -54,53 +56,7 @@ const Filter = ({ onApplyFilters }) => {
   const hasCommonElement = (arr1, arr2) => {
     return arr1.some((item) => arr2.includes(item));
   };
-  //   const getUsersByDistanceAndSports = async (center, radius, sports) => {
-  // const query = usersCollection.near({
-  //   center: new firebase.firestore.GeoPoint(center.lat, center.lng),
-  //   radius: radius,
-  // });
-  // const query = usersRef;
-  // query.get().then((snapshot) => {
-  //   const users = [];
-  //   snapshot.forEach((doc) => {
-  //     users.push(doc.data());
-  //   });
 
-  //   console.log(users);
-  //   return users;
-  // });
-
-  // const query = usersCollection.near({
-  //   center: new firebase.firestore.GeoPoint(center.lat, center.lng),
-  //   radius: radius,
-  // });
-
-  // const querySnapshot = await query.get();
-  // console.log(querySnapshot);
-  // const filteredUsers = [];
-
-  // querySnapshot.forEach((doc) => {
-  //   const userData = doc.data();
-  //   if (hasCommonElement(userData.sports, sports)) {
-  //     filteredUsers.push(userData);
-  //   }
-  // });
-
-  // return filteredUsers;
-  //   };
-  //   async function getUsersNearLocation(center, radius) {
-  //     const query = usersRef.near({
-  //       center: new firebase.firestore.GeoPoint(center.lat, center.lng),
-  //       radius: radius,
-  //     });
-
-  //     try {
-  //       const users = await query;
-  //       console.log("Users found:", users);
-  //     } catch (error) {
-  //       console.error("Error fetching users near location:", error);
-  //     }
-  //   }
   async function getUsersNearLocation(center, radius, sports) {
     const usersCollection = geofirestore.collection("users");
     const query = usersCollection.near({
@@ -138,6 +94,24 @@ const Filter = ({ onApplyFilters }) => {
     }
   };
 
+  async function filterUsersBySports(selectedSports, currentUserId) {
+    if (selectedSports.length === 0) {
+      return [];
+    }
+    try {
+      const response = await axios.post("/api/filterUsersBySports", {
+        selectedSports,
+        currentUserId,
+      });
+      const filteredUsers = response.data;
+      console.log("Filtered users:", filteredUsers);
+      return filteredUsers;
+    } catch (error) {
+      console.error("Error filtering users by sports:", error.message);
+      return [];
+    }
+  }
+
   const applyFilters = async () => {
     // Call API to fetch users based on filters
     // For example, let's assume the API returns the following data:
@@ -146,20 +120,17 @@ const Filter = ({ onApplyFilters }) => {
     console.log("Selected distance:", distance);
     setShowFilter(false);
     setShowSnackbar(true);
-    // Call API to fetch users based on filters
-    const users = await getUsersNearLocation(
-      { lat: 40, lng: -73 },
-      milesToKilometers(distance)
-    );
-    console.log(users);
-    // onApplyFilters(users);
+    try {
+      const filteredUsers = await filterUsersBySports(selectedSports, user);
+      console.log(filteredUsers);
 
-    // const data = [
-    //   // Array of filtered data
-    // ];
-
-    // // Pass the data to the parent component
-    // onApplyFilters(data);
+      if (filteredUsers.length === 0) {
+        onApplyFilters([]);
+      }
+      onApplyFilters(filteredUsers);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
   };
 
   function milesToKilometers(miles) {

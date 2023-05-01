@@ -1,14 +1,9 @@
 .swipeButtons {
-  position: fixed;
-  bottom: 10vh;
-  width: 100%;
   display: flex;
+  bottom: 5vh;
   justify-content: space-evenly;
-}
-
-.swipeButtons .MuiIconButton-root {
-  background-color: white;
-  box-shadow: 0px 10px 53px 0px rgba(0, 0, 0, 0.3) !important;
+  width: 100%;
+  position: fixed;
 }
 
 .swipeButtons__repeat {
@@ -23,4 +18,25 @@
 .swipeButtons__right {
   padding: 3vw !important;
   color: rgb(149, 202, 98) !important;
+}
+
+/* Default button size for small screens */
+.swipeButtons .MuiIconButton-root {
+  background-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0px 10px 53px 0px rgba(0, 0, 0, 0.3) !important;
+  padding: 4vw !important;
+}
+
+/* Increase button size for medium screens */
+@media (min-width: 768px) {
+  .swipeButtons .MuiIconButton-root {
+    padding: 3vw !important;
+  }
+}
+
+/* Increase button size for large screens */
+@media (min-width: 1024px) {
+  .swipeButtons .MuiIconButton-root {
+    padding: 3vw !important;
+  }
 }
