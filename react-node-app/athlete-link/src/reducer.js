@@ -1,10 +1,10 @@
 export const initialState = {
   user: null,
   userData: null,
-  matches: null,
-  likes: null,
-  likesme: null,
-  dislikes: null,
+  matches: new Set(),
+  likes: new Set(),
+  likesme: new Set(),
+  dislikes: new Set(),
   newUserFlag: false,
 };
 

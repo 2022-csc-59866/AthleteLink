@@ -25,7 +25,7 @@ import "./Onboarding.css";
 import axios from "axios";
 import debounce from "lodash/debounce";
 import "firebase/storage"; // <----
-
+import { getUserData } from "../../api";
 const useStyles = makeStyles((theme) => ({
   root: {
     "&$focused $notchedOutline": {
@@ -306,8 +306,9 @@ const Onboarding = () => {
         cardImgUrl: cardImageResponse.data,
         sports: sports,
         location: userLocation,
-        profilesLiked: [],
-        profilesLikedMe: [],
+        likes: [],
+        likesMe: [],
+        dislikes: [],
         matches: [],
       };
       console.log("profile image url", profileImgURL, cardlImageURL);
@@ -315,6 +316,12 @@ const Onboarding = () => {
 
       await submitOnboardingData(onboardingData);
       await disableNewUserFlag(user);
+      const userDataResponse = await getUserData(user);
+
+      dispatch({
+        type: actionTypes.SET_USER_DATA,
+        userData: userDataResponse.data,
+      });
 
       dispatch({
         type: actionTypes.SET_NEW_USER_FLAG,

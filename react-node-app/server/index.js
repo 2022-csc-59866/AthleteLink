@@ -184,8 +184,9 @@ app.post("/api/onboarding", async (req, res) => {
     cardImgUrl,
     sports,
     location,
-    profilesLiked,
-    profilesLikedMe,
+    likes,
+    dislikes,
+    likesMe,
     matches,
   } = req.body;
 
@@ -199,11 +200,11 @@ app.post("/api/onboarding", async (req, res) => {
     cardImgUrl,
     sports,
     location,
-    profilesLiked,
-    profilesLikedMe,
+    likes,
+    dislikes,
+    likesMe,
     matches,
   };
-
   try {
     const docRef = db.collection("users").doc(userID);
     await docRef.update(onboardingData);
@@ -263,6 +264,90 @@ app.post("/api/updateProfile", async (req, res) => {
   }
 });
 
+// Like User endpoint
+
+// Like User endpoint
+// Like User endpoint
+app.post("/api/likeUser", async (req, res) => {
+  const { currentUserID, likedUserID } = req.body;
+  const sortedUserIDs = [currentUserID, likedUserID].sort((a, b) =>
+    a.localeCompare(b)
+  );
+  try {
+    const currentUserRef = db.collection("users").doc(currentUserID);
+    const currentUserDoc = await currentUserRef.get();
+    const currentUserLikes = currentUserDoc.data().likes;
+
+    // Check if the current user has not already liked the liked user
+    if (!currentUserLikes.includes(likedUserID)) {
+      await currentUserRef.update({
+        likes: admin.firestore.FieldValue.arrayUnion(likedUserID),
+      });
+
+      const likedUserRef = db.collection("users").doc(likedUserID);
+      await likedUserRef.update({
+        likesMe: admin.firestore.FieldValue.arrayUnion(currentUserID),
+      });
+
+      // Check if the liked user also likes the current user
+      const likedUserDoc = await likedUserRef.get();
+      const likedUserLikes = likedUserDoc.data().likes;
+      let message;
+
+      if (likedUserLikes.includes(currentUserID)) {
+        // Sort the user IDs lexicographically
+
+        // Check if the match already exists
+        const existingMatches = await db
+          .collection("matches")
+          .where("user1", "==", sortedUserIDs[0])
+          .where("user2", "==", sortedUserIDs[1])
+          .get();
+
+        if (existingMatches.empty) {
+          // It's a match! Create a new match document
+          await db.collection("matches").add({
+            user1: sortedUserIDs[0],
+            user2: sortedUserIDs[1],
+            timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            messages: [],
+          });
+
+          message = "Match found!";
+        } else {
+          message = "Match already exists.";
+        }
+      } else {
+        message = "User liked successfully.";
+      }
+
+      res.status(200).send({ message });
+    } else {
+      res.status(200).send({ message: "User has already liked this person." });
+    }
+  } catch (error) {
+    console.error("Error liking user:", error);
+    res.status(500).send({ message: "Error liking user.", error });
+  }
+});
+
+// Dislike User endpoint
+app.post("/api/dislikeUser", async (req, res) => {
+  const { currentUserID, dislikedUserID } = req.body;
+
+  try {
+    const currentUserRef = db.collection("users").doc(currentUserID);
+    await currentUserRef.update({
+      dislikes: admin.firestore.FieldValue.arrayUnion(dislikedUserID),
+    });
+
+    res.status(200).send({ message: "User disliked successfully." });
+  } catch (error) {
+    console.error("Error disliking user:", error);
+    res.status(500).send({ message: "Error disliking user.", error });
+  }
+});
+
 app.post("/api/disableNewUserFlag", async (req, res) => {
   const { userID } = req.body;
 
@@ -297,32 +382,6 @@ app.get("/api/getAllUsers", async (req, res) => {
   }
 });
 
-// app.post("/api/filterUsersBySports", async (req, res) => {
-//   try {
-//     const selectedSports = req.body.selectedSports;
-//     const filteredUsers = await getUsersWithSelectedSports(selectedSports);
-//     res.json(filteredUsers);
-//   } catch (error) {
-//     res.status(500).send("Error filtering users by sports: " + error.message);
-//   }
-// });
-
-// async function getUsersWithSelectedSports(selectedSports) {
-//   const usersRef = db.collection("users");
-//   const usersQuery = usersRef.where(
-//     "sports",
-//     "array-contains-any",
-//     selectedSports
-//   );
-//   const querySnapshot = await usersQuery.get();
-
-//   const filteredUsers = [];
-//   querySnapshot.forEach((doc) => {
-//     filteredUsers.push({ id: doc.id, ...doc.data() });
-//   });
-
-//   return filteredUsers;
-// }
 app.post("/api/filterUsersBySports", async (req, res) => {
   const { selectedSports, currentUserId } = req.body;
   try {
@@ -357,6 +416,47 @@ app.get("/api/getUserData/:userId", async (req, res) => {
   } catch (error) {
     console.error("Error getting user data:", error);
     res.status(500).json({ message: "Failed to get user data." });
+  }
+});
+
+app.get("/api/getMatchedUsers/:currentUserID", async (req, res) => {
+  const { currentUserID } = req.params;
+
+  try {
+    const matchesSnapshot = await db
+      .collection("matches")
+      .where("user1", "==", currentUserID)
+      .get();
+
+    const reversedMatchesSnapshot = await db
+      .collection("matches")
+      .where("user2", "==", currentUserID)
+      .get();
+
+    const matchedUserIDs = [
+      ...matchesSnapshot.docs.map((doc) => doc.data().user2),
+      ...reversedMatchesSnapshot.docs.map((doc) => doc.data().user1),
+    ];
+    const uniqueMatchedUserIDs = [...new Set(matchedUserIDs)];
+
+    const matchedUsersPromises = uniqueMatchedUserIDs.map((uid) =>
+      db.collection("users").doc(uid).get()
+    );
+    const matchedUsersSnapshot = await Promise.all(matchedUsersPromises);
+
+    const matchedUsers = matchedUsersSnapshot.map((userDoc) => {
+      const userData = userDoc.data();
+      return {
+        uid: userDoc.id,
+        username: userData.username,
+        profileImgUrl: userData.profileImgUrl,
+      };
+    });
+
+    res.status(200).send(matchedUsers);
+  } catch (error) {
+    console.error("Error fetching matched users:", error);
+    res.status(500).send({ message: "Error fetching matched users.", error });
   }
 });
 
