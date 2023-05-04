@@ -1,19 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TinderCard from "react-tinder-card";
 import "./AthleteLinkCards.css";
 import { database } from "../../firebase";
 import { useStateValue } from "../../StateProvider";
 import { actionTypes } from "../../reducer";
 import { debounce } from "lodash";
+import "../SwipeButtons/SwipeButtons.css";
+
+import ReplayIcon from "@mui/icons-material/Replay";
+import CloseIcon from "@mui/icons-material/Close";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { IconButton } from "@material-ui/core";
+import Box from "@mui/material/Box";
 
 const AthleteLinkCards = (props) => {
   const { data } = props;
-  const [people, setPeople] = useState([]);
   const [lastDirection, setLastDirection] = useState();
   const [trigger, setTrigger] = useState(false);
-  const [{ user, likes, dislikes, matches }, dispatch] = useStateValue();
+  const [{ user, likes, dislikes, userData }, dispatch] = useStateValue();
   const [isLikingUser, setIsLikingUser] = useState(false);
   const [isRequestInProgress, setRequestInProgress] = useState(false);
+  const currentPersonRef = useRef(null);
+  const tinderCardRef = useRef();
 
   const [currentPerson, setCurrentPerson] = useState({
     name: "initialName",
@@ -48,6 +56,12 @@ const AthleteLinkCards = (props) => {
     margin: "0",
   };
 
+  const swipe = (direction) => {
+    if (tinderCardRef.current) {
+      const tinderCardInstance = tinderCardRef.current;
+      tinderCardInstance.swipe(direction);
+    }
+  };
   const swiped = debounce(async (direction, person) => {
     if (isLikingUser) {
       return; // Do not proceed if there's an ongoing likeUser request
@@ -140,52 +154,151 @@ const AthleteLinkCards = (props) => {
   return (
     <div key={currentPerson.name}>
       <div className="athleteLinkCards__cardContainer">
-        {data &&
-          data.map((person) => (
-            <TinderCard
-              className="swipe"
-              key={person.data.username}
-              preventSwipe={
-                isLikingUser ? ["up", "down", "left", "right"] : ["up", "down"]
-              }
-              onSwipe={(dir) => swiped(dir, person.data.uid)}
-            >
-              <div
-                style={
-                  person.data.cardImgUrl
-                    ? { backgroundImage: `url(${person.data.cardImgUrl})` }
-                    : {
-                        background: "hsla(46, 95%, 56%, 1)",
-                        background:
-                          "linear-gradient(90deg, hsla(46, 95%, 56%, 1) 0%, hsla(350, 97%, 65%, 1) 100%)",
-                        background:
-                          "-moz-linear-gradient(90deg, hsla(46, 95%, 56%, 1) 0%, hsla(350, 97%, 65%, 1) 100%)",
-                        background:
-                          "-webkit-linear-gradient(90deg, hsla(46, 95%, 56%, 1) 0%, hsla(350, 97%, 65%, 1) 100%)",
-                        filter:
-                          "progid: DXImageTransform.Microsoft.gradient( startColorstr='#F9C823', endColorstr='#FC506E', GradientType=1 )",
-                      }
-                }
-                className="card"
-              ></div>
-              <div style={contentStyle} className="card_bottom">
-                <h2 style={titleStyle}>{person.data.username}</h2>
-                <p>
-                  <span style={textStyleBold}>About Me:</span>{" "}
-                  <span style={textStyle}>{person.data.bio}</span>
-                </p>
-                <p>
-                  <span style={textStyleBold}>Sports:</span>{" "}
-                  <span style={textStyle}>{person.data.sports.join(", ")}</span>
-                </p>
-                <p>
-                  <span style={textStyleBold}>Gender:</span>{" "}
-                  <span style={textStyle}>Male</span>
-                </p>
-              </div>
-            </TinderCard>
-          ))}
+        {data.length != 0
+          ? data.map((person) => {
+              currentPersonRef.current = person;
+              return (
+                <TinderCard
+                  ref={tinderCardRef}
+                  className="swipe"
+                  key={person.data.username}
+                  preventSwipe={
+                    isLikingUser
+                      ? ["up", "down", "left", "right"]
+                      : ["up", "down"]
+                  }
+                  onSwipe={(dir) => swiped(dir, person.data.uid)}
+                >
+                  <div
+                    style={
+                      person.data.cardImgUrl
+                        ? { backgroundImage: `url(${person.data.cardImgUrl})` }
+                        : {
+                            background: "hsla(46, 95%, 56%, 1)",
+                            background:
+                              "linear-gradient(90deg, hsla(46, 95%, 56%, 1) 0%, hsla(350, 97%, 65%, 1) 100%)",
+                            background:
+                              "-moz-linear-gradient(90deg, hsla(46, 95%, 56%, 1) 0%, hsla(350, 97%, 65%, 1) 100%)",
+                            background:
+                              "-webkit-linear-gradient(90deg, hsla(46, 95%, 56%, 1) 0%, hsla(350, 97%, 65%, 1) 100%)",
+                            filter:
+                              "progid: DXImageTransform.Microsoft.gradient( startColorstr='#F9C823', endColorstr='#FC506E', GradientType=1 )",
+                          }
+                    }
+                    className="card"
+                  ></div>
+                  <div style={contentStyle} className="card_bottom">
+                    <h2 style={titleStyle}>{person.data.username}</h2>
+                    <p>
+                      <span style={textStyleBold}>About Me:</span>{" "}
+                      <span style={textStyle}>{person.data.bio}</span>
+                    </p>
+                    <p>
+                      <span style={textStyleBold}>Sports:</span>{" "}
+                      <span style={textStyle}>
+                        {person.data.sports.join(", ")}
+                      </span>
+                    </p>
+                    <p>
+                      <span style={textStyleBold}>Gender:</span>{" "}
+                      <span style={textStyle}>Malee</span>
+                    </p>
+                  </div>
+                </TinderCard>
+              );
+            })
+          : userData && (
+              <TinderCard
+                className="swipe"
+                key={userData.uid}
+                preventSwipe={["up", "down", "left", "right"]}
+              >
+                <div
+                  style={
+                    userData.cardImgUrl
+                      ? { backgroundImage: `url(${userData.cardImgUrl})` }
+                      : {
+                          background: "hsla(46, 95%, 56%, 1)",
+                          background:
+                            "linear-gradient(90deg, hsla(46, 95%, 56%, 1) 0%, hsla(350, 97%, 65%, 1) 100%)",
+                          background:
+                            "-moz-linear-gradient(90deg, hsla(46, 95%, 56%, 1) 0%, hsla(350, 97%, 65%, 1) 100%)",
+                          background:
+                            "-webkit-linear-gradient(90deg, hsla(46, 95%, 56%, 1) 0%, hsla(350, 97%, 65%, 1) 100%)",
+                          filter:
+                            "progid: DXImageTransform.Microsoft.gradient( startColorstr='#F9C823', endColorstr='#FC506E', GradientType=1 )",
+                        }
+                  }
+                  className="card"
+                ></div>
+                <div style={contentStyle} className="card_bottom">
+                  <h2 style={titleStyle} color="red">
+                    Hey {userData.username}, please modify the filter to find
+                    users near you!
+                  </h2>
+                  <p>
+                    <span style={textStyleBold}>About Me:</span>{" "}
+                    <span style={textStyle}>{userData.bio}</span>
+                  </p>
+                  <p>
+                    <span style={textStyleBold}>Sports:</span>{" "}
+                    <span style={textStyle}>{userData.sports.join(", ")}</span>
+                  </p>
+                  <p>
+                    <span style={textStyleBold}>Gender:</span>{" "}
+                    <span style={textStyle}>Male</span>
+                  </p>
+                </div>
+              </TinderCard>
+            )}
       </div>
+      <Box className="swipeButtons">
+        <IconButton
+          className="swipeButtons__repeat"
+          disabled={data.length == 0 ? true : false}
+        >
+          <ReplayIcon fontSize="large" />
+        </IconButton>
+        <IconButton
+          className="swipeButtons__left"
+          disabled={data.length == 0 ? true : false}
+          onClick={() => {
+            if (currentPersonRef.current) {
+              console.log("sup", dislikes);
+
+              if (
+                likes.has(currentPersonRef.current.data.uid) ||
+                dislikes.has(currentPersonRef.current.data.uid)
+              ) {
+                return;
+              }
+              swipe("left");
+              swiped("left", currentPersonRef.current.data.uid);
+            }
+          }}
+        >
+          <CloseIcon fontSize="large" />
+        </IconButton>
+
+        <IconButton
+          className="swipeButtons__right"
+          disabled={data.length == 0 ? true : false}
+          onClick={() => {
+            if (currentPersonRef.current) {
+              if (
+                likes.has(currentPersonRef.current.data.uid) ||
+                dislikes.has(currentPersonRef.current.data.uid)
+              ) {
+                return;
+              }
+              swipe("right");
+              swiped("right", currentPersonRef.current.data.uid);
+            }
+          }}
+        >
+          <FavoriteIcon fontSize="large" />
+        </IconButton>
+      </Box>
     </div>
   );
 };

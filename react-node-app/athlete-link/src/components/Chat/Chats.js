@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Chat from "./Chat";
 import { useStateValue } from "../../StateProvider";
 import { formatDistanceToNow } from "date-fns";
+import NoMatches from "../NoMatches/NoMatches";
 import "./Chats.css";
 
 function Chats() {
@@ -42,34 +43,32 @@ function Chats() {
   };
   return (
     <div className="chats">
-      {chatList
-        ? chatList.map((chat) => {
-            console.log(chat);
-            if (chat.lastMessage.createdAt) {
+      {chatList.length !== 0 ? (
+        chatList.map((chat) => {
+          {
+            // console.log(chat);
+            if (chat != null && chat != undefined) {
+              console.log(chat.lastMessage.createdAt);
+              const createdAt = chat.lastMessage.createdAt
+                ? getRelativeTime(chat.lastMessage.createdAt)
+                : "No messages yet";
+              return (
+                <Chat
+                  key={chat.chatId}
+                  chatId={chat.chatId}
+                  personUid={chat.otherUserId}
+                  name={chat.otherUsername}
+                  message={chat.lastMessage.message}
+                  timeStamp={createdAt}
+                  profilePic={chat.otherUserProfileImgUrl}
+                />
+              );
             }
-
-            {
-              // console.log(chat);
-              if (chat != null && chat != undefined) {
-                console.log(chat.lastMessage.createdAt);
-                const createdAt = chat.lastMessage.createdAt
-                  ? getRelativeTime(chat.lastMessage.createdAt)
-                  : "No messages yet";
-                return (
-                  <Chat
-                    key={chat.chatId}
-                    chatId={chat.chatId}
-                    personUid={chat.otherUserId}
-                    name={chat.otherUsername}
-                    message={chat.lastMessage.message}
-                    timeStamp={createdAt}
-                    profilePic={chat.otherUserProfileImgUrl}
-                  />
-                );
-              }
-            }
-          })
-        : null}
+          }
+        })
+      ) : (
+        <NoMatches />
+      )}
     </div>
   );
 }

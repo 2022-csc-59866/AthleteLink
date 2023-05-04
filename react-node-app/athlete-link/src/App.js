@@ -5,7 +5,7 @@ import AthleteLinkCards from "./components/Cards/AthleteLinkCards";
 import "./App.css";
 import { ToastProvider } from "react-toast-notifications";
 import Filter from "./components/Filter/Filter";
-import SwipeButtons from "./SwipeButtons";
+import SwipeButtons from "./components/SwipeButtons/SwipeButtons";
 import Chats from "./components/Chat/Chats";
 import ChatScreen from "./components/Chat/ChatScreen";
 import Login from "./components/Login/Login";
@@ -61,7 +61,6 @@ function App() {
                 <Filter onApplyFilters={setFilteredData} />
 
                 <AthleteLinkCards data={filteredData} />
-                <SwipeButtons />
               </Route>
             </Switch>
           </Router>
