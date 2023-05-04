@@ -23,6 +23,7 @@
     "nodemon": "^2.0.22",
     "path": "^0.12.7",
     "salted-md5": "^4.0.3",
+    "serverless-http": "^3.2.0",
     "uuid-v4": "^0.1.0"
   }
 }
