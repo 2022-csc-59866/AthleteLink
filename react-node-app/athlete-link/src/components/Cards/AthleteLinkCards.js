@@ -4,6 +4,7 @@ import "./AthleteLinkCards.css";
 import { database } from "../../firebase";
 import { useStateValue } from "../../StateProvider";
 import { actionTypes } from "../../reducer";
+import { debounce } from "lodash";
 
 const AthleteLinkCards = (props) => {
   const { data } = props;
@@ -11,6 +12,9 @@ const AthleteLinkCards = (props) => {
   const [lastDirection, setLastDirection] = useState();
   const [trigger, setTrigger] = useState(false);
   const [{ user, likes, dislikes, matches }, dispatch] = useStateValue();
+  const [apiCallInProgress, setApiCallInProgress] = useState(false);
+  const [isLikingUser, setIsLikingUser] = useState(false);
+  const [isRequestInProgress, setRequestInProgress] = useState(false);
 
   const [currentPerson, setCurrentPerson] = useState({
     name: "initialName",
@@ -45,26 +49,34 @@ const AthleteLinkCards = (props) => {
     margin: "0",
   };
 
-  const swiped = async (direction, person) => {
+  const swiped = debounce(async (direction, person) => {
+    if (isLikingUser) {
+      return; // Do not proceed if there's an ongoing likeUser request
+    }
+
     setLastDirection(direction);
     setTrigger(!trigger);
-    if (direction == "left") {
+    if (direction === "left") {
       dispatch({
         type: actionTypes.SET_DISLIKES,
         dislikes: dislikes.add(person),
       });
-      // leftSwipe(person);
+
       const response = await dislikeUser(user, person);
       console.log("DISLIKED USER", response);
-    } else if (direction == "right") {
+    } else if (direction === "right") {
+      setIsLikingUser(true); // Set flag to true before calling likeUser
+
       dispatch({
         type: actionTypes.SET_LIKES,
         likes: likes.add(person),
       });
       const response = await likeUser(user, person);
       console.log("LIKED USER", response);
+
+      setIsLikingUser(false); // Set flag back to false after likeUser is done
     }
-  };
+  }, 500);
 
   // over here every single time the user swipes, we will invert the trigger state value and call useEffect,
   //we can check if the dislikes/likes store is > 5 and make an api call to save the likes and dislikes to the database
@@ -73,6 +85,15 @@ const AthleteLinkCards = (props) => {
   // }, [trigger]);
 
   const likeUser = async (currentUserID, likedUserID) => {
+    // Check if a request is already in progress
+    if (isRequestInProgress) {
+      console.log("Request in progress. Skipping this request.");
+      return;
+    }
+
+    // Set request status to in progress
+    setRequestInProgress(true);
+
     console.log(currentUserID, likedUserID);
     try {
       const response = await fetch("/api/likeUser", {
@@ -93,8 +114,12 @@ const AthleteLinkCards = (props) => {
       }
     } catch (error) {
       console.error("Error liking user:", error);
+    } finally {
+      // Set request status to not in progress
+      setRequestInProgress(false);
     }
   };
+
   const dislikeUser = async (currentUserID, dislikedUserID) => {
     try {
       const response = await fetch("/api/dislikeUser", {
@@ -127,7 +152,9 @@ const AthleteLinkCards = (props) => {
             <TinderCard
               className="swipe"
               key={person.data.username}
-              preventSwipe={["up", "down"]}
+              preventSwipe={
+                isLikingUser ? ["up", "down", "left", "right"] : ["up", "down"]
+              }
               onSwipe={(dir) => swiped(dir, person.data.uid)}
             >
               <div

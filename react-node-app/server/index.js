@@ -265,14 +265,12 @@ app.post("/api/updateProfile", async (req, res) => {
 });
 
 // Like User endpoint
-
-// Like User endpoint
-// Like User endpoint
 app.post("/api/likeUser", async (req, res) => {
   const { currentUserID, likedUserID } = req.body;
   const sortedUserIDs = [currentUserID, likedUserID].sort((a, b) =>
     a.localeCompare(b)
   );
+
   try {
     const currentUserRef = db.collection("users").doc(currentUserID);
     const currentUserDoc = await currentUserRef.get();
@@ -295,28 +293,35 @@ app.post("/api/likeUser", async (req, res) => {
       let message;
 
       if (likedUserLikes.includes(currentUserID)) {
-        // Sort the user IDs lexicographically
+        const matchRef = db.collection("matches").doc();
+        const chatRef = db.collection("chats").doc(matchRef.id);
 
-        // Check if the match already exists
-        const existingMatches = await db
-          .collection("matches")
-          .where("user1", "==", sortedUserIDs[0])
-          .where("user2", "==", sortedUserIDs[1])
-          .get();
+        // Use a transaction to ensure atomic operations
+        await db.runTransaction(async (transaction) => {
+          // Check if the match already exists
+          const existingMatchDoc = await transaction.get(matchRef);
 
-        if (existingMatches.empty) {
-          // It's a match! Create a new match document
-          await db.collection("matches").add({
-            user1: sortedUserIDs[0],
-            user2: sortedUserIDs[1],
-            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            messages: [],
-          });
+          if (!existingMatchDoc.exists) {
+            // It's a match! Create a new match document
+            transaction.set(matchRef, {
+              user1: sortedUserIDs[0],
+              user2: sortedUserIDs[1],
+              timestamp: admin.firestore.FieldValue.serverTimestamp(),
+              messages: [],
+            });
 
-          message = "Match found!";
-        } else {
-          message = "Match already exists.";
-        }
+            // Create a chat document with the same ID as the match document
+            transaction.set(chatRef, {
+              user1: sortedUserIDs[0],
+              user2: sortedUserIDs[1],
+              messages: [],
+            });
+
+            message = "Match found!";
+          } else {
+            message = "Match already exists.";
+          }
+        });
       } else {
         message = "User liked successfully.";
       }
@@ -385,6 +390,14 @@ app.get("/api/getAllUsers", async (req, res) => {
 app.post("/api/filterUsersBySports", async (req, res) => {
   const { selectedSports, currentUserId } = req.body;
   try {
+    // Get current user data
+    const currentUserRef = db.collection("users").doc(currentUserId);
+    const currentUserDoc = await currentUserRef.get();
+    const currentUserData = currentUserDoc.data();
+    const currentUserLikes = currentUserData.likes || [];
+    const currentUserDislikes = currentUserData.dislikes || [];
+    const currentUserMatches = currentUserData.matches || [];
+
     const usersRef = db.collection("users");
     const snapshot = await usersRef
       .where("sports", "array-contains-any", selectedSports)
@@ -392,7 +405,15 @@ app.post("/api/filterUsersBySports", async (req, res) => {
 
     const filteredUsers = snapshot.docs
       .map((doc) => ({ id: doc.id, data: doc.data() }))
-      .filter((user) => user.id !== currentUserId);
+      .filter((user) => {
+        // Exclude the current user and users who have been liked, disliked, or matched with
+        return (
+          user.id !== currentUserId &&
+          !currentUserLikes.includes(user.id) &&
+          !currentUserDislikes.includes(user.id) &&
+          !currentUserMatches.includes(user.id)
+        );
+      });
 
     res.json(filteredUsers);
   } catch (error) {
