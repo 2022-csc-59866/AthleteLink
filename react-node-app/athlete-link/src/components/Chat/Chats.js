@@ -1,53 +1,69 @@
 import React, { useEffect, useState } from "react";
 import Chat from "./Chat";
 import { useStateValue } from "../../StateProvider";
+import { formatDistanceToNow } from "date-fns";
 import "./Chats.css";
 
 function Chats() {
   const [{ user, likes, matches, likesme, dislikes }, dispatch] =
     useStateValue();
-  const [chatMatches, setChatMatches] = useState([]);
-  const fetchMatchedUsers = async (currentUserID) => {
+  const [chatList, setChatList] = useState([]);
+  const getUserChats = async (currentUserId) => {
     try {
-      const response = await fetch(`/api/getMatchedUsers/${currentUserID}`);
-      const matchedUsers = await response.json();
+      const response = await fetch("/api/getUserChats", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currentUserId,
+        }),
+      });
 
-      if (response.status === 200) {
-        // Process the matchedUsers array here
-        console.log(matchedUsers);
-        setChatMatches(matchedUsers);
+      if (response.ok) {
+        const data = await response.json();
+        setChatList(data);
       } else {
-        console.error("Error fetching matched users:", matchedUsers.error);
+        throw new Error("Failed to get user chats");
       }
     } catch (error) {
-      console.error("Error fetching matched users:", error);
+      console.error("Error getting user chats:", error);
     }
   };
 
-  // Call the function with the actual UID of the current user
-
   useEffect(() => {
-    fetchMatchedUsers(user);
-  }, []);
+    getUserChats(user);
+  }, [user]);
+  const getRelativeTime = (lastMessageCreatedAt) => {
+    const dateObject = new Date(lastMessageCreatedAt._seconds * 1000);
+    const relativeTime = formatDistanceToNow(dateObject, { addSuffix: true });
 
-  function randomIntFromInterval(min, max) {
-    // min and max included
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
+    return relativeTime;
+  };
   return (
     <div className="chats">
-      {chatMatches
-        ? chatMatches.map((person) => {
+      {chatList
+        ? chatList.map((chat) => {
+            console.log(chat);
+            if (chat.lastMessage.createdAt) {
+            }
+
             {
-              if (person != null && person != undefined) {
+              // console.log(chat);
+              if (chat != null && chat != undefined) {
+                console.log(chat.lastMessage.createdAt);
+                const createdAt = chat.lastMessage.createdAt
+                  ? getRelativeTime(chat.lastMessage.createdAt)
+                  : "No messages yet";
                 return (
                   <Chat
-                    key={person.uid}
-                    personUid={person.uid}
-                    name={person.username}
-                    message={`I'm ${person.username}, nice to meet you`}
-                    timeStamp={`${randomIntFromInterval(1, 60)} minutes ago`}
-                    profilePic={person.profileImgUrl}
+                    key={chat.chatId}
+                    chatId={chat.chatId}
+                    personUid={chat.otherUserId}
+                    name={chat.otherUsername}
+                    message={chat.lastMessage.message}
+                    timeStamp={createdAt}
+                    profilePic={chat.otherUserProfileImgUrl}
                   />
                 );
               }

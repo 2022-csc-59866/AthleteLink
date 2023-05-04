@@ -481,6 +481,50 @@ app.get("/api/getMatchedUsers/:currentUserID", async (req, res) => {
   }
 });
 
+app.post("/api/getUserChats", async (req, res) => {
+  const { currentUserId } = req.body;
+  try {
+    const chatsRef = db.collection("chats");
+    const snapshot = await chatsRef.where("user1", "==", currentUserId).get();
+    const snapshot2 = await chatsRef.where("user2", "==", currentUserId).get();
+
+    const allChats = [...snapshot.docs, ...snapshot2.docs];
+
+    const chatDataPromises = allChats.map(async (chatDoc) => {
+      const chatData = chatDoc.data();
+      const otherUserId =
+        chatData.user1 === currentUserId ? chatData.user2 : chatData.user1;
+
+      const otherUserRef = db.collection("users").doc(otherUserId);
+      const otherUserDoc = await otherUserRef.get();
+      const otherUserData = otherUserDoc.data();
+
+      const lastMessage =
+        chatData.messages.length > 0
+          ? chatData.messages[chatData.messages.length - 1]
+          : {
+              message: `Start chatting with ${otherUserData.username} now!`,
+              createdAt: "",
+            };
+
+      return {
+        chatId: chatDoc.id,
+        otherUserId: otherUserId,
+        otherUsername: otherUserData.username,
+        otherUserProfileImgUrl: otherUserData.profileImgUrl,
+        lastMessage: lastMessage,
+      };
+    });
+
+    const chatDataList = await Promise.all(chatDataPromises);
+
+    res.status(200).json(chatDataList);
+  } catch (error) {
+    console.error("Error getting user chats:", error);
+    res.status(500).json({ message: "Failed to get user chats." });
+  }
+});
+
 app.get("/", (req, res) => {
   res.json({ message: "Hello from server!" });
 });

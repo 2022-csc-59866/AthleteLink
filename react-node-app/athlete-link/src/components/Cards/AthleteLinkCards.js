@@ -12,7 +12,6 @@ const AthleteLinkCards = (props) => {
   const [lastDirection, setLastDirection] = useState();
   const [trigger, setTrigger] = useState(false);
   const [{ user, likes, dislikes, matches }, dispatch] = useStateValue();
-  const [apiCallInProgress, setApiCallInProgress] = useState(false);
   const [isLikingUser, setIsLikingUser] = useState(false);
   const [isRequestInProgress, setRequestInProgress] = useState(false);
 
@@ -77,12 +76,6 @@ const AthleteLinkCards = (props) => {
       setIsLikingUser(false); // Set flag back to false after likeUser is done
     }
   }, 500);
-
-  // over here every single time the user swipes, we will invert the trigger state value and call useEffect,
-  //we can check if the dislikes/likes store is > 5 and make an api call to save the likes and dislikes to the database
-  // useEffect(() => {
-  //   if(dislikes.length > 5 || likes.length > 5)
-  // }, [trigger]);
 
   const likeUser = async (currentUserID, likedUserID) => {
     // Check if a request is already in progress

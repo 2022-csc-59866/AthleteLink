@@ -47,7 +47,7 @@ function App() {
                 <Header backButton="/" />
                 <UpdateUser />
               </Route>
-              <Route path="/chat/:person">
+              <Route path="/chat/:chatId">
                 <Header backButton="/chat" />
                 <ChatScreen />
               </Route>
