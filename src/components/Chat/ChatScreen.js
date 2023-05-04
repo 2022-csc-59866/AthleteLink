@@ -13,7 +13,6 @@ function ChatScreen() {
   const [messages, setMessages] = useState(null);
 
   useEffect(() => {
-    console.log("Userdata", userData);
     if (chatId) {
       const unsubscribe = database
         .collection("chats")

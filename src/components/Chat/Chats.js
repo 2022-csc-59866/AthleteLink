@@ -6,8 +6,7 @@ import NoMatches from "../NoMatches/NoMatches";
 import "./Chats.css";
 
 function Chats() {
-  const [{ user, likes, matches, likesme, dislikes }, dispatch] =
-    useStateValue();
+  const { user } = useStateValue();
   const [chatList, setChatList] = useState([]);
   const getUserChats = async (currentUserId) => {
     try {
@@ -47,8 +46,7 @@ function Chats() {
         chatList.map((chat) => {
           {
             // console.log(chat);
-            if (chat != null && chat != undefined) {
-              console.log(chat.lastMessage.createdAt);
+            if (chat !== null && chat !== undefined) {
               const createdAt = chat.lastMessage.createdAt
                 ? getRelativeTime(chat.lastMessage.createdAt)
                 : "No messages yet";

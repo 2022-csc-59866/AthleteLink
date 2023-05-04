@@ -1,26 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { auth, provider } from "../../firebase";
+import React from "react";
 import "./Login.css";
 import logo from "../../assets/logo-black.png";
-import { actionTypes } from "../../reducer";
-import { useStateValue } from "../../StateProvider";
-import { Link, useHistory } from "react-router-dom";
-import { database } from "../../firebase";
+import { Link } from "react-router-dom";
 
 function Login() {
-  const [{}, dispatch] = useStateValue();
-  // const signInGoogle = () => {
-  //   auth
-  //     .signInWithPopup(provider)
-  //     .then((result) => {
-  //       dispatch({
-  //         type: actionTypes.SET_USER,
-  //         user: result.user,
-  //       });
-  //     })
-  //     .catch((error) => alert(error.message));
-  // };
-
   return (
     <div className="login">
       <div className="login__container">
@@ -35,13 +18,7 @@ function Login() {
             <span>Sign In with Athlete Link</span>
           </div>
         </Link>
-        {/* <div className="login__withGoogle" onClick={signInGoogle}> */}
-        {/* <img
-            src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-webinar-optimizing-for-success-google-business-webinar-13.png"
-            alt="Google Logo"
-          />
-        <span>Sign In with Google</span> */}
-        {/* </div> */}
+
         <Link to="/signup">
           <div className="login__withGoogle">
             <div>Dont have an Account? Sign Up Here.</div>

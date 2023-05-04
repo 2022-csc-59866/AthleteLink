@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import TinderCard from "react-tinder-card";
 import "./AthleteLinkCards.css";
-import { database } from "../../firebase";
 import { useStateValue } from "../../StateProvider";
 import { actionTypes } from "../../reducer";
 import { debounce } from "lodash";
@@ -15,17 +14,12 @@ import Box from "@mui/material/Box";
 
 const AthleteLinkCards = (props) => {
   const { data } = props;
-  const [lastDirection, setLastDirection] = useState();
   const [trigger, setTrigger] = useState(false);
   const [{ user, likes, dislikes, userData }, dispatch] = useStateValue();
   const [isLikingUser, setIsLikingUser] = useState(false);
   const [isRequestInProgress, setRequestInProgress] = useState(false);
   const currentPersonRef = useRef(null);
   const tinderCardRef = useRef();
-
-  const [currentPerson, setCurrentPerson] = useState({
-    name: "initialName",
-  });
 
   const contentStyle = {
     display: "flex",
@@ -67,7 +61,6 @@ const AthleteLinkCards = (props) => {
       return; // Do not proceed if there's an ongoing likeUser request
     }
 
-    setLastDirection(direction);
     setTrigger(!trigger);
     if (direction === "left") {
       dispatch({
@@ -152,7 +145,7 @@ const AthleteLinkCards = (props) => {
   };
 
   return (
-    <div key={currentPerson.name}>
+    <div>
       <div className="athleteLinkCards__cardContainer">
         {data.length != 0
           ? data.map((person) => {
@@ -161,7 +154,7 @@ const AthleteLinkCards = (props) => {
                 <TinderCard
                   ref={tinderCardRef}
                   className="swipe"
-                  key={person.data.username}
+                  key={person.data.uid}
                   preventSwipe={
                     isLikingUser
                       ? ["up", "down", "left", "right"]
@@ -255,17 +248,15 @@ const AthleteLinkCards = (props) => {
       <Box className="swipeButtons">
         <IconButton
           className="swipeButtons__repeat"
-          disabled={data.length == 0 ? true : false}
+          disabled={data.length === 0 ? true : false}
         >
           <ReplayIcon fontSize="large" />
         </IconButton>
         <IconButton
           className="swipeButtons__left"
-          disabled={data.length == 0 ? true : false}
+          disabled={data.length === 0 ? true : false}
           onClick={() => {
             if (currentPersonRef.current) {
-              console.log("sup", dislikes);
-
               if (
                 likes.has(currentPersonRef.current.data.uid) ||
                 dislikes.has(currentPersonRef.current.data.uid)
@@ -282,7 +273,7 @@ const AthleteLinkCards = (props) => {
 
         <IconButton
           className="swipeButtons__right"
-          disabled={data.length == 0 ? true : false}
+          disabled={data.length === 0 ? true : false}
           onClick={() => {
             if (currentPersonRef.current) {
               if (
