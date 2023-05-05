@@ -484,6 +484,7 @@ app.get("/api/getMatchedUsers/:currentUserID", async (req, res) => {
 
 app.post("/api/getUserChats", async (req, res) => {
   const { currentUserId } = req.body;
+  console.log(currentUserId);
   try {
     const chatsRef = db.collection("chats");
     const snapshot = await chatsRef.where("user1", "==", currentUserId).get();
