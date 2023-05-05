@@ -57,6 +57,7 @@ const AthleteLinkCards = (props) => {
     }
   };
   const swiped = debounce(async (direction, person) => {
+    console.log("person here", person);
     if (isLikingUser) {
       return; // Do not proceed if there's an ongoing likeUser request
     }

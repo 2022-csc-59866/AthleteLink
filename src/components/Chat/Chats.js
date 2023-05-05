@@ -32,7 +32,9 @@ function Chats() {
   };
 
   useEffect(() => {
-    getUserChats(user);
+    if (user) {
+      getUserChats(user);
+    }
   }, [user]);
   const getRelativeTime = (lastMessageCreatedAt) => {
     const dateObject = new Date(lastMessageCreatedAt._seconds * 1000);
@@ -45,7 +47,6 @@ function Chats() {
       {chatList.length !== 0 ? (
         chatList.map((chat) => {
           {
-            // console.log(chat);
             if (chat !== null && chat !== undefined) {
               const createdAt = chat.lastMessage.createdAt
                 ? getRelativeTime(chat.lastMessage.createdAt)
