@@ -11,7 +11,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import Grid from "@mui/material/Grid";
-import Snackbar from "@mui/material/Snackbar";
+import { useToasts } from "react-toast-notifications";
 import { firestore, geofirestore } from "../../firebase";
 import firebase from "firebase/compat/app";
 import "firebase/storage"; // <----
@@ -40,6 +40,7 @@ const Filter = ({ onApplyFilters }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [{ user }, dispatch] = useStateValue();
+  const { addToast } = useToasts();
 
   const handleSportChange = (event) => {
     setSelectedSports(event.target.value);
@@ -104,7 +105,7 @@ const Filter = ({ onApplyFilters }) => {
         currentUserId,
       });
       const filteredUsers = response.data;
-      console.log("Filtered users:", filteredUsers);
+
       return filteredUsers;
     } catch (error) {
       console.error("Error filtering users by sports:", error.message);
@@ -126,10 +127,14 @@ const Filter = ({ onApplyFilters }) => {
 
       if (filteredUsers.length === 0) {
         onApplyFilters([]);
+        addToast("No users found", { appearance: "warning" });
+
+        return;
       }
+      addToast("Successfully filtered users", { appearance: "success" });
       onApplyFilters(filteredUsers);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      addToast("Error while filtered users", { appearance: "error" });
     }
   };
 

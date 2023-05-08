@@ -31,6 +31,36 @@ const useStyles = makeStyles((theme) => ({
   input: {
     display: "none",
   },
+  header: {
+    color: "#e75480",
+  },
+  buttonContinue: {
+    background: "#e75480",
+    borderRadius: 3,
+    border: "1px solid #e75480",
+    color: "white",
+    height: 48,
+    fontSize: "1rem",
+    padding: "0 30px",
+    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+    "&:hover": {
+      background: "#e75480",
+      fontSize: "1.2rem",
+    },
+  },
+  buttonCancel: {
+    background: "white",
+    borderRadius: 3,
+    border: "1px solid #e75480",
+    color: "#e75480",
+    height: 48,
+    fontSize: "1rem",
+    padding: "0 30px",
+    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+    "&:hover": {
+      fontSize: "1.2rem",
+    },
+  },
 }));
 
 function SignInWithAthleteLink() {
@@ -99,7 +129,7 @@ function SignInWithAthleteLink() {
         <div className="register__innerContainer">
           <form className={classes.root} onSubmit={signIn}>
             <Box m={4} pb={5}>
-              <h1>Sign In</h1>
+              <h1 className={classes.header}>Sign In</h1>
             </Box>
 
             <TextField
@@ -119,7 +149,9 @@ function SignInWithAthleteLink() {
 
             <div>
               <Link to="/">
-                <Button variant="contained">Cancel</Button>
+                <Button variant="contained" className={classes.buttonCancel}>
+                  Cancel
+                </Button>
               </Link>
 
               <Button
@@ -127,8 +159,8 @@ function SignInWithAthleteLink() {
                 variant="contained"
                 color="primary"
                 size="large"
-                // onClick={signUp}
                 onSubmit={signIn}
+                className={classes.buttonContinue}
               >
                 SignIn
               </Button>

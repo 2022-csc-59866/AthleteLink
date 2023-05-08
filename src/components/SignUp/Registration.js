@@ -3,21 +3,12 @@ import axios from "axios";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useStateValue } from "../../StateProvider";
-// import firebase from 'firebase/compat/app';
-// import {database} from "../../firebase";
+import { useToasts } from "react-toast-notifications";
 import Box from "@material-ui/core/Box";
-// import CardContent from "@material-ui/core/CardContent";
-// import Fab from "@material-ui/core/Fab";
-// import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-
-// import { auth } from "../../firebase";
-// import { provider } from "../../firebase";
 import { actionTypes } from "../../reducer";
 import { emphasize, makeStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
-// import logo from "../../assets/logo-black.png";
 import "./Registration.css";
-// import { func } from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,12 +28,43 @@ const useStyles = makeStyles((theme) => ({
   input: {
     display: "none",
   },
+  header: {
+    color: "#e75480",
+  },
+  buttonContinue: {
+    background: "#e75480",
+    borderRadius: 3,
+    border: "1px solid #e75480",
+    color: "white",
+    height: 48,
+    fontSize: "1rem",
+    padding: "0 30px",
+    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+    "&:hover": {
+      background: "#e75480",
+      fontSize: "1.2rem",
+    },
+  },
+  buttonCancel: {
+    background: "white",
+    borderRadius: 3,
+    border: "1px solid #e75480",
+    color: "#e75480",
+    height: 48,
+    fontSize: "1rem",
+    padding: "0 30px",
+    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+    "&:hover": {
+      fontSize: "1.2rem",
+    },
+  },
 }));
 
 function Registration() {
   const classes = useStyles();
   const [{ user }, dispatch] = useStateValue();
   const [email, setEmail] = useState(null);
+  const { addToast } = useToasts();
 
   const [password, setPassword] = useState(null);
 
@@ -69,15 +91,24 @@ function Registration() {
             const newUserFlag = response.data[0]["flagNewUser"];
             var regexPattern = new RegExp("true");
             const boolValueNewUserFlag = regexPattern.test(newUserFlag);
-
+            addToast("Successfully Created User", { appearance: "success" });
             dispatch({
               type: actionTypes.SET_NEW_USER_FLAG,
               newUserFlag: boolValueNewUserFlag,
             });
+
             console.log(`The user's newUserFlag is set to ${newUserFlag}`);
           });
       })
-      .catch((error) => console.error("Error while creating user", error));
+      .catch((error) => {
+        console.log(error);
+        addToast(
+          `Error Creating user: Email is taken OR Password is too short`,
+          {
+            appearance: "error",
+          }
+        );
+      });
   };
 
   return (
@@ -85,7 +116,7 @@ function Registration() {
       <div className="register__innerContainer">
         <form className={classes.root} onSubmit={signUp}>
           <Box m={4} pb={5}>
-            <h1>Sign Up</h1>
+            <h1 className={classes.header}>Sign Up</h1>
           </Box>
 
           <TextField
@@ -105,7 +136,9 @@ function Registration() {
 
           <div>
             <Link to="/">
-              <Button variant="contained">Cancel</Button>
+              <Button variant="contained" className={classes.buttonCancel}>
+                Cancel
+              </Button>
             </Link>
 
             <Button
@@ -113,7 +146,7 @@ function Registration() {
               variant="contained"
               color="primary"
               size="large"
-              // onClick={signUp}
+              className={classes.buttonContinue}
               onSubmit={signUp}
             >
               Signup
