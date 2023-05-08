@@ -185,7 +185,7 @@ const Onboarding = () => {
   const checkAvailability = debounce(async (usernameProp) => {
     axios
       .get(
-        `http://localhost:3001/checkUsernameAvailability?username=${usernameProp}`
+        `${process.env.REACT_APP_API_BASE_URL}/checkUsernameAvailability?username=${usernameProp}`
       )
       .then((result) => {
         setIsAvailable(result.data.isAvailable);
@@ -275,7 +275,7 @@ const Onboarding = () => {
       console.log("USER ID FROM FRONT END", user);
 
       const profileImageResponse = await axios.post(
-        "http://localhost:3001/uploadProfileImage",
+        `${process.env.REACT_APP_API_BASE_URL}/uploadProfileImage`,
         formDataProfile
       );
 
@@ -284,7 +284,7 @@ const Onboarding = () => {
       formDataCard.append("userID", user);
 
       const cardImageResponse = await axios.post(
-        "http://localhost:3001/uploadCardImage",
+        `${process.env.REACT_APP_API_BASE_URL}/uploadCardImage`,
         formDataCard
       );
       const imageUrl2 = cardImageResponse.data;
@@ -331,11 +331,10 @@ const Onboarding = () => {
       addToast(error.message, { appearance: "error" });
     }
   };
-
   const disableNewUserFlag = async (userID) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/disableNewUserFlag",
+        `${process.env.REACT_APP_API_BASE_URL}/api/disableNewUserFlag`,
         { userID }
       );
       console.log(response.data.message); // You can use the response data as needed
@@ -347,7 +346,7 @@ const Onboarding = () => {
   const submitOnboardingData = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/onboarding",
+        `${process.env.REACT_APP_API_BASE_URL}/api/onboarding`,
         data
       );
       // Handle the response as needed

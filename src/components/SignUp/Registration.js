@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useStateValue } from "../../StateProvider";
@@ -48,28 +48,38 @@ function Registration() {
 
   const signUp = (e) => {
     e.preventDefault();
-    return axios.post('http://localhost:3001/api/create-user', {email,password}).then((auth) => {
+    return axios
+      .post(`${process.env.REACT_APP_API_BASE_URL}/api/create-user`, {
+        email,
+        password,
+      })
+      .then((auth) => {
         dispatch({
           type: actionTypes.SET_USER,
           user: auth.data.uid,
-        })
-        return auth.data
-      }).then((data) => {
-           axios.get(`http://localhost:3001/getNewUserFlag?uid=${data.uid}`)
-        .then(response => {
-          const newUserFlag = response.data[0]["flagNewUser"]
-          var regexPattern = new RegExp("true");
-          const boolValueNewUserFlag = regexPattern.test(newUserFlag);
+        });
+        return auth.data;
+      })
+      .then((data) => {
+        axios
+          .get(
+            `${process.env.REACT_APP_API_BASE_URL}/getNewUserFlag?uid=${data.uid}`
+          )
+          .then((response) => {
+            const newUserFlag = response.data[0]["flagNewUser"];
+            var regexPattern = new RegExp("true");
+            const boolValueNewUserFlag = regexPattern.test(newUserFlag);
 
-          dispatch({
-            type: actionTypes.SET_NEW_USER_FLAG,
-            newUserFlag: boolValueNewUserFlag,
+            dispatch({
+              type: actionTypes.SET_NEW_USER_FLAG,
+              newUserFlag: boolValueNewUserFlag,
+            });
+            console.log(`The user's newUserFlag is set to ${newUserFlag}`);
           });
-          console.log(`The user's newUserFlag is set to ${newUserFlag}`);
-        })
-        })
-        .catch(error => console.error("Error while creating user", error))}
-  
+      })
+      .catch((error) => console.error("Error while creating user", error));
+  };
+
   return (
     <div className="register__outterContainer">
       <div className="register__innerContainer">
@@ -77,7 +87,7 @@ function Registration() {
           <Box m={4} pb={5}>
             <h1>Sign Up</h1>
           </Box>
-          
+
           <TextField
             onChange={(e) => setEmail(e.target.value)}
             label="Email"
@@ -92,7 +102,6 @@ function Registration() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-         
 
           <div>
             <Link to="/">

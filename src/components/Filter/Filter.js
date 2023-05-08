@@ -83,7 +83,7 @@ const Filter = ({ onApplyFilters }) => {
   const getUserLocation = async (userID) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/getUserLocation",
+        `${process.env.REACT_APP_API_BASE_URL}/api/getUserLocation`,
         { userID }
       );
       const { location } = response.data;

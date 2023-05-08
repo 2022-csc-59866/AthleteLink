@@ -56,7 +56,9 @@ function SignInWithAthleteLink() {
       })
       .then((data) => {
         axios
-          .get(`http://localhost:3001/getNewUserFlag?uid=${data.user.uid}`)
+          .get(
+            `${process.env.REACT_APP_API_BASE_URL}/getNewUserFlag?uid=${data.user.uid}`
+          )
           .then((response) => {
             const newUserFlag = response.data[0]["flagNewUser"];
             var regexPattern = new RegExp("true");

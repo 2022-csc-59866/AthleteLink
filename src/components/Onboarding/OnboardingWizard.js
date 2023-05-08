@@ -1,39 +1,43 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import axios from 'axios';
+import React, { useState, useCallback, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import axios from "axios";
 import Box from "@material-ui/core/Box";
-import "./OnboardingWizard.css"
-import { AddressAutofill, AddressMinimap, useConfirmAddress, config } from '@mapbox/search-js-react';
-import debounce from 'lodash/debounce';
+import "./OnboardingWizard.css";
+import {
+  AddressAutofill,
+  AddressMinimap,
+  useConfirmAddress,
+  config,
+} from "@mapbox/search-js-react";
+import debounce from "lodash/debounce";
 import { useStateValue } from "../../StateProvider";
 import { actionTypes } from "../../reducer";
 
-
 const useStyles = makeStyles((theme) => ({
   form: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    margin: 'auto',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    margin: "auto",
     // marginTop: theme.spacing(5),
-    width: '80%',
+    width: "80%",
     maxWidth: 500,
-    '& > *': {
+    "& > *": {
       margin: theme.spacing(2),
-      width: '100%'
+      width: "100%",
     },
-    position: 'absolute'
+    position: "absolute",
   },
   button: {
-    marginTop: theme.spacing(2)
-  }
+    marginTop: theme.spacing(2),
+  },
 }));
 
 // const useStyles = makeStyles((theme) => ({
@@ -58,23 +62,27 @@ const useStyles = makeStyles((theme) => ({
 
 const OnboardingWizard = () => {
   const classes = useStyles();
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showFormExpanded, setShowFormExpanded] = useState(false);
   const [showMinimap, setShowMinimap] = useState(false);
   const [feature, setFeature] = useState();
   const [showValidationText, setShowValidationText] = useState(false);
-  const [token, setToken] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
+  const [token, setToken] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
   const [isAvailable, setIsAvailable] = useState(null);
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState("");
   const [{ user }, dispatch] = useStateValue();
 
   const checkAvailability = debounce(async (username) => {
-    axios.get(`http://localhost:3001/checkUsernameAvailability?username=${username}`).then((result) => {
-       setIsAvailable(result.data.isAvailable);
-    })
+    axios
+      .get(
+        `${process.env.REACT_APP_API_BASE_URL}/checkUsernameAvailability?username=${username}`
+      )
+      .then((result) => {
+        setIsAvailable(result.data.isAvailable);
+      });
   }, 500);
 
   const handleUsernameChange = (event) => {
@@ -84,10 +92,10 @@ const OnboardingWizard = () => {
   };
 
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    age: '',
-    gender: ''
+    firstName: "",
+    lastName: "",
+    age: "",
+    gender: "",
   });
 
   // const handleLocationChange = (event) => {
@@ -107,19 +115,19 @@ const OnboardingWizard = () => {
   //     setSuggestions([]);
   //   }
   // }
-  
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const clearLocation = () => {
-    setLatitude(null)
-    setLongitude(null)
-  }
+    setLatitude(null);
+    setLongitude(null);
+  };
   const handleLocation = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -129,60 +137,59 @@ const OnboardingWizard = () => {
       (error) => {
         console.log(error);
         setLatitude(40.7128);
-        setLongitude(74.0060);
+        setLongitude(74.006);
       }
     );
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    formData["location"] = latitude + "," + longitude
-    formData["username"] = username 
-    formData["userID"] = user
+    formData["location"] = latitude + "," + longitude;
+    formData["username"] = username;
+    formData["userID"] = user;
     // console.log("user is here", form)
-    
-    try{
-      const result = axios.post('http://localhost:3001/api/onboarding', {
-        firstName: formData["firstName"],
-        lastName: formData["lastName"],
-        location: !(latitude || longitude) ? "40.7128,74.0060" :latitude + ","+longitude,
-        age: formData["age"],
-        gender:  formData["gender"],
-        username: username.toLowerCase(),
-        userID: user
-      })
-      console.log(result, "Successfulluy completed onboarding")
+
+    try {
+      const result = axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/api/onboarding`,
+        {
+          firstName: formData["firstName"],
+          lastName: formData["lastName"],
+          location: !(latitude || longitude)
+            ? "40.7128,74.0060"
+            : latitude + "," + longitude,
+          age: formData["age"],
+          gender: formData["gender"],
+          username: username.toLowerCase(),
+          userID: user,
+        }
+      );
+      console.log(result, "Successfulluy completed onboarding");
       dispatch({
-            type: actionTypes.SET_NEW_USER_FLAG,
-            newUserFlag: false,
-          });
-    }catch(error){
-      console.log("Error while submitting onboarding", error)
+        type: actionTypes.SET_NEW_USER_FLAG,
+        newUserFlag: false,
+      });
+    } catch (error) {
+      console.log("Error while submitting onboarding", error);
     }
   };
 
-   
-
- 
-
   useEffect(() => {
     const accessToken = process.env.REACT_APP_MAP_TOKEN;
-    setToken(accessToken)
+    setToken(accessToken);
     config.accessToken = accessToken;
-  }, [])
+  }, []);
   const handleRetrieve = useCallback(
     (res) => {
-    const feature = res.features[0];
-    setFeature(feature);
-    setShowMinimap(true);
-    setShowFormExpanded(true);
+      const feature = res.features[0];
+      setFeature(feature);
+      setShowMinimap(true);
+      setShowFormExpanded(true);
     },
     [setFeature, setShowMinimap]
   );
- 
-  
 
-   const handleKeyPress = (event) => {
+  const handleKeyPress = (event) => {
     const pattern = /^[a-z0-9]*$/; // Regular expression to match lowercase letters
     const inputChar = String.fromCharCode(event.charCode);
 
@@ -193,21 +200,18 @@ const OnboardingWizard = () => {
 
   function resetForm() {
     const inputs = document.querySelectorAll("input");
-    inputs.forEach(input => input.value = "");
+    inputs.forEach((input) => (input.value = ""));
     setShowFormExpanded(false);
     setShowValidationText(false);
     setFeature(null);
   }
 
-
   return (
-
-     <div>
+    <div>
       <div className="onboarding__outterContainer">
         <div className="onboarding__innerContainer">
-         
           <form className={classes.form} onSubmit={handleSubmit}>
-             <Box mb={0} mt={0} pt={0} pb={0}>
+            <Box mb={0} mt={0} pt={0} pb={0}>
               <h1>Setup Your Account To Get Started!</h1>
             </Box>
             <TextField
@@ -236,8 +240,12 @@ const OnboardingWizard = () => {
               required
             />
             {isAvailable !== null && (
-              <p>{isAvailable ? 'Username is available' : 'Username is not available'}</p>
-            )} 
+              <p>
+                {isAvailable
+                  ? "Username is available"
+                  : "Username is not available"}
+              </p>
+            )}
             <TextField
               label="Age"
               name="age"
@@ -246,99 +254,89 @@ const OnboardingWizard = () => {
               variant="outlined"
               type="number"
               InputProps={{
-                inputProps: { min: 0 }
+                inputProps: { min: 0 },
               }}
               required
             />
             <label className="txt-s txt-bold color-gray mb3">Address</label>
-              <TextField
-                label="Latitude"
-                value={latitude}
-                disabled
-              />
-              <TextField
-                label="Longitude"
-                value={longitude}
-                disabled
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleLocation}
-              >
-                Get Location
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={clearLocation}
-              >
-                Clear Location
-              </Button>
-              {!(latitude && longitude) && (
-                <>
-                <AddressAutofill accessToken={token} onRetrieve={handleRetrieve}>
-              <TextField    
-              placeholder="Start typing your address, e.g. 123 Main..."
-              autoComplete="address-line1"
-              id="mapbox-autofill"
-              variant="outlined"
-              margin="normal"
-              />
-            </AddressAutofill>
-            { !showFormExpanded && 
-            <div
-            id="manual-entry"
-            className="w180 mt6 link txt-ms border-b color-gray color-black-on-hover"
-            onClick={() => setShowFormExpanded(true)}
+            <TextField label="Latitude" value={latitude} disabled />
+            <TextField label="Longitude" value={longitude} disabled />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleLocation}
             >
-            Enter an address manually
-            </div>
-            } 
-            <div className="secondary-inputs" style={{ display: showFormExpanded ? 'block' : 'none' }}>
-              <TextField
-              
-              label="Address Line 2"
-              name="addressline2"
-              placeholder="Apartment, suite, unit, building, floor, etc."
-              autoComplete="address-line2"
-              variant="outlined"
-              margin="normal"
-              />
-              <TextField
-              label="City"
-              name="city"
-              
-              placeholder="City"
-              autoComplete="address-level2"
-              variant="outlined"
-              margin="normal"
-              />
-          
-              <TextField
-              label="State/Region"
-              name="stateregion"
-              
-              placeholder="State / Region"
-              autoComplete="address-level1"
-              variant="outlined"
-              margin="normal"
-              />
-    
-              <TextField
-              label="Zipcode"
-              name="zipcode"
-              className="input"
-              placeholder="ZIP / Postcode"
-              autoComplete="postal-code"
-              variant="outlined"
-                margin="normal"
-              />
-            </div>
+              Get Location
+            </Button>
+            <Button variant="contained" color="error" onClick={clearLocation}>
+              Clear Location
+            </Button>
+            {!(latitude && longitude) && (
+              <>
+                <AddressAutofill
+                  accessToken={token}
+                  onRetrieve={handleRetrieve}
+                >
+                  <TextField
+                    placeholder="Start typing your address, e.g. 123 Main..."
+                    autoComplete="address-line1"
+                    id="mapbox-autofill"
+                    variant="outlined"
+                    margin="normal"
+                  />
+                </AddressAutofill>
+                {!showFormExpanded && (
+                  <div
+                    id="manual-entry"
+                    className="w180 mt6 link txt-ms border-b color-gray color-black-on-hover"
+                    onClick={() => setShowFormExpanded(true)}
+                  >
+                    Enter an address manually
+                  </div>
+                )}
+                <div
+                  className="secondary-inputs"
+                  style={{ display: showFormExpanded ? "block" : "none" }}
+                >
+                  <TextField
+                    label="Address Line 2"
+                    name="addressline2"
+                    placeholder="Apartment, suite, unit, building, floor, etc."
+                    autoComplete="address-line2"
+                    variant="outlined"
+                    margin="normal"
+                  />
+                  <TextField
+                    label="City"
+                    name="city"
+                    placeholder="City"
+                    autoComplete="address-level2"
+                    variant="outlined"
+                    margin="normal"
+                  />
 
-                </>
-              )}
-            
+                  <TextField
+                    label="State/Region"
+                    name="stateregion"
+                    placeholder="State / Region"
+                    autoComplete="address-level1"
+                    variant="outlined"
+                    margin="normal"
+                  />
+
+                  <TextField
+                    label="Zipcode"
+                    name="zipcode"
+                    className="input"
+                    placeholder="ZIP / Postcode"
+                    autoComplete="postal-code"
+                    variant="outlined"
+                    margin="normal"
+                  />
+                </div>
+              </>
+            )}
+
             <FormControl variant="outlined" required>
               <InputLabel id="gender-label">Gender</InputLabel>
               <Select
@@ -356,14 +354,19 @@ const OnboardingWizard = () => {
               </Select>
               <FormHelperText>Please select your gender</FormHelperText>
             </FormControl>
-            <Button className={classes.button} variant="contained" color="primary" type="submit" disabled={!isAvailable || !username}>
+            <Button
+              className={classes.button}
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={!isAvailable || !username}
+            >
               Submit
             </Button>
           </form>
         </div>
       </div>
     </div>
-    
   );
 };
 

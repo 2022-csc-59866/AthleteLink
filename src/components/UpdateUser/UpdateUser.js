@@ -189,7 +189,7 @@ const UpdateUser = () => {
   const checkAvailability = debounce(async (usernameProp) => {
     axios
       .get(
-        `http://localhost:3001/checkUsernameAvailability?username=${usernameProp}`
+        `${process.env.REACT_APP_API_BASE_URL}/checkUsernameAvailability?username=${usernameProp}`
       )
       .then((result) => {
         setIsAvailable(result.data.isAvailable);
@@ -299,7 +299,7 @@ const UpdateUser = () => {
         formDataProfile.append("userID", user);
         formDataProfile.append("image", selectedProfileImg);
         const profileImageResponse = await axios.post(
-          "http://localhost:3001/uploadProfileImage",
+          `${process.env.REACT_APP_API_BASE_URL}/uploadProfileImage`,
           formDataProfile
         );
         onboardingData["profileImgUrl"] = profileImageResponse.data;
@@ -310,7 +310,7 @@ const UpdateUser = () => {
         formDataCard.append("userID", user);
 
         const cardImageResponse = await axios.post(
-          "http://localhost:3001/uploadCardImage",
+          `${process.env.REACT_APP_API_BASE_URL}/uploadCardImage`,
           formDataCard
         );
         onboardingData["cardImgUrl"] = cardImageResponse.data;
@@ -328,7 +328,7 @@ const UpdateUser = () => {
   const submitOnboardingData = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/updateProfile",
+        `${process.env.REACT_APP_API_BASE_URL}/api/updateProfile`,
         data
       );
       // Handle the response as needed
