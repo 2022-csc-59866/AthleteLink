@@ -71,6 +71,7 @@ function SignInWithAthleteLink() {
   const [userID, setUserID] = useState(null);
 
   const signIn = (e) => {
+    console.log("base url here", process.env.REACT_APP_API_BASE_URL);
     e.preventDefault();
 
     firebase
@@ -85,6 +86,7 @@ function SignInWithAthleteLink() {
         return userCredential;
       })
       .then((data) => {
+        console.log("data after login here", data);
         axios
           .get(
             `${process.env.REACT_APP_API_BASE_URL}/getNewUserFlag?uid=${data.user.uid}`
