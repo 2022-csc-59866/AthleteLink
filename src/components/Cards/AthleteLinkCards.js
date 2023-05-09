@@ -97,17 +97,19 @@ const AthleteLinkCards = (props) => {
 
     console.log(currentUserID, likedUserID);
     try {
-      const response = await fetch("/api/likeUser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          currentUserID,
-          likedUserID,
-        }),
-      });
-
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/api/likeUser`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            currentUserID,
+            likedUserID,
+          }),
+        }
+      );
       if (response.ok) {
         console.log("User liked successfully");
       } else {
@@ -123,16 +125,19 @@ const AthleteLinkCards = (props) => {
 
   const dislikeUser = async (currentUserID, dislikedUserID) => {
     try {
-      const response = await fetch("/api/dislikeUser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          currentUserID,
-          dislikedUserID,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/api/dislikeUser`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            currentUserID,
+            dislikedUserID,
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
