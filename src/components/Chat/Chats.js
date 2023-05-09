@@ -6,7 +6,7 @@ import NoMatches from "../NoMatches/NoMatches";
 import "./Chats.css";
 
 function Chats() {
-  const { user, userData } = useStateValue();
+  const [{ user, userData }, dispatch] = useStateValue();
   const [chatList, setChatList] = useState([]);
   const getUserChats = async (currentUserId) => {
     try {
@@ -38,7 +38,7 @@ function Chats() {
     if (user) {
       getUserChats(user);
     } else {
-      console.log("user is not set", user);
+      console.log(user, userData);
     }
   }, [user]);
 
