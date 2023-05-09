@@ -100,10 +100,13 @@ const Filter = ({ onApplyFilters }) => {
       return [];
     }
     try {
-      const response = await axios.post("/api/filterUsersBySports", {
-        selectedSports,
-        currentUserId,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/api/filterUsersBySports`,
+        {
+          selectedSports,
+          currentUserId,
+        }
+      );
       const filteredUsers = response.data;
 
       return filteredUsers;

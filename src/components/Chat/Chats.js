@@ -10,15 +10,18 @@ function Chats() {
   const [chatList, setChatList] = useState([]);
   const getUserChats = async (currentUserId) => {
     try {
-      const response = await fetch("/api/getUserChats", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          currentUserId,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/api/getUserChats`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            currentUserId,
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
