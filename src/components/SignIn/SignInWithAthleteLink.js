@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -124,6 +124,9 @@ function SignInWithAthleteLink() {
         alert("Incorrect Username And/or Password");
       });
   };
+  useEffect(() => {
+    console.log("base url here", process.env.REACT_APP_API_BASE_URL);
+  }, []);
 
   return (
     <div>
