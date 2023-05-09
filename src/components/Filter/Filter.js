@@ -126,13 +126,12 @@ const Filter = ({ onApplyFilters }) => {
       console.log(filteredUsers);
 
       if (filteredUsers.length === 0) {
-        onApplyFilters([]);
         addToast("No users found", { appearance: "warning" });
-
-        return;
+        onApplyFilters([]);
+      } else {
+        addToast("Successfully filtered users", { appearance: "success" });
+        onApplyFilters(filteredUsers);
       }
-      addToast("Successfully filtered users", { appearance: "success" });
-      onApplyFilters(filteredUsers);
     } catch (error) {
       addToast("Error while filtered users", { appearance: "error" });
     }

@@ -6,7 +6,7 @@ import NoMatches from "../NoMatches/NoMatches";
 import "./Chats.css";
 
 function Chats() {
-  const { user } = useStateValue();
+  const { user, userData } = useStateValue();
   const [chatList, setChatList] = useState([]);
   const getUserChats = async (currentUserId) => {
     try {
@@ -34,8 +34,11 @@ function Chats() {
   useEffect(() => {
     if (user) {
       getUserChats(user);
+    } else {
+      console.log("user is not set", user);
     }
   }, [user]);
+
   const getRelativeTime = (lastMessageCreatedAt) => {
     const dateObject = new Date(lastMessageCreatedAt._seconds * 1000);
     const relativeTime = formatDistanceToNow(dateObject, { addSuffix: true });

@@ -15,13 +15,13 @@ import SignInWithAthleteLink from "./components/SignIn/SignInWithAthleteLink";
 import Onboarding from "./components/Onboarding/Onboarding";
 import UpdateUser from "./components/UpdateUser/UpdateUser";
 function App() {
-  const [{ user, newUserFlag }, dispatch] = useStateValue();
+  const [{ user, newUserFlag, userData }, dispatch] = useStateValue();
   const [filteredData, setFilteredData] = useState([]);
 
   return (
     <ToastProvider autoDismiss autoDismissTimeout="3000">
       <div className="App">
-        {!user ? (
+        {!user || !userData ? (
           <Router>
             <Switch>
               <Route path="/signin">
