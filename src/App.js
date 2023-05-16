@@ -14,6 +14,7 @@ import Registration from "./components/SignUp/Registration";
 import SignInWithAthleteLink from "./components/SignIn/SignInWithAthleteLink";
 import Onboarding from "./components/Onboarding/Onboarding";
 import UpdateUser from "./components/UpdateUser/UpdateUser";
+import SearchGyms from "./components/SearchGyms/SearchGyms";
 function App() {
   const [{ user, newUserFlag, userData }, dispatch] = useStateValue();
   const [filteredData, setFilteredData] = useState([]);
@@ -54,6 +55,10 @@ function App() {
               <Route path="/chat">
                 <Header backButton="/" />
                 <Chats />
+              </Route>
+              <Route path="/searchGyms">
+                <Header />
+                <SearchGyms />
               </Route>
 
               <Route path="/">

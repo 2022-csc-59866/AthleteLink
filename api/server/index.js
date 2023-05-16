@@ -527,6 +527,19 @@ app.post("/api/getUserChats", async (req, res) => {
   }
 });
 
+app.get("/api/searchGyms", async (req, res) => {
+  const { lat, long } = req.query;
+  const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat}%2C${long}&radius=100000&keyword=gym&key=AIzaSyBI9LvhBMroRs7rTa6tVAj6DUDwZE6nLZI`;
+
+  try {
+    const response = await axios.get(url);
+    res.json(response.data.results);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while fetching gyms" });
+  }
+});
+
 app.get("/", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
