@@ -75,19 +75,9 @@
         <li>Node JS </li>
       </ul>
     </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        ``` 
-        git clone https://github.com/2022-csc-59866/AthleteLink.git
-        ```
-       
-        <li><a href="#installation">Installation</a></li>
-        ```
-        npm install
-        ```
-      </ul>
+    <li> <a href="#getting-started">Getting Started</a> </li>
+    <li><a href="#prerequisites">Prerequisites</a></li>       
+    <li><a href="#installation">Installation</a></li>
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
