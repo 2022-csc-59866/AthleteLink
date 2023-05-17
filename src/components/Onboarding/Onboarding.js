@@ -354,6 +354,15 @@ const Onboarding = () => {
       console.error("Error submitting onboarding data:", error);
     }
   };
+  const handleLogout = async () => {
+    try {
+      await firebase.auth().signOut();
+      localStorage.clear();
+      window.location.reload();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <div>
@@ -572,6 +581,19 @@ const Onboarding = () => {
                 startIcon={<SaveIcon />}
               >
                 Start Using Athlete Link
+              </Button>
+            </div>
+            <div>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleLogout}
+                style={{
+                  width: "100%",
+                }}
+                fullWidth
+              >
+                Log Out
               </Button>
             </div>
           </form>
