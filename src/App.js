@@ -22,7 +22,7 @@ function App() {
   return (
     <ToastProvider autoDismiss autoDismissTimeout="3000">
       <div className="App">
-        {!user || !userData ? (
+        {!user ? (
           <Router>
             <Switch>
               <Route path="/signin">
