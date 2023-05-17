@@ -25,19 +25,32 @@
     <img src="src/assets/logo-white.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">project_title</h3>
+<h3 align="center">Athlete Link</h3>
 
   <p align="center">
-    project_description
+      Introducing Athlete Link, the ultimate platform for fitness enthusiasts and athletes to connect, train, and reach their fitness goals together. With our innovative and user-friendly     interface, finding the perfect training partner has never been easier.
+
+      Swipe, match, and connect! Athlete Link offers a seamless and engaging experience similar to popular dating apps. Browse through a diverse community of fitness enthusiasts in your area, and with a simple swipe, indicate your interest in their profile. Whether you're looking for a workout buddy, a running partner, a yoga companion, or someone to hit the weights with, Athlete Link is here to help you find your ideal training match.
+
+      But it doesn't stop there! Once you've found a match, our real-time chat feature allows you to connect instantly and start planning your training sessions. Coordinate schedules, exchange fitness tips, and motivate each other towards success. Athlete Link creates a supportive and dynamic environment where you can build meaningful connections with like-minded individuals who share your passion for fitness.
+
+      Looking for a gym to train at? We've got you covered. Athlete Link provides a comprehensive gym-finder feature that enables you to locate nearby fitness facilities tailored to your preferences. Whether you prefer a traditional gym, a specialized studio, or outdoor training spaces, our app will guide you to the perfect location that meets your specific needs.
+
+      Key Features:
+
+      Swipe and Match: Explore user profiles and indicate your interest with a simple swipe.
+      Real-time Chat: Connect with your training partner and plan workouts in a seamless messaging interface.
+      Gym Finder: Discover nearby gyms and fitness facilities based on your preferences.
+      Profile Customization: Showcase your fitness journey, interests, and goals through a personalized profile.
+      Privacy and Safety: We prioritize the privacy and safety of our users, ensuring a secure and enjoyable experience.
+      Join the thriving fitness community on Athlete Link and unlock a world of training opportunities. Whether you're a beginner taking your first steps towards a healthier lifestyle or a seasoned athlete looking for new challenges, our app is designed to empower you on your fitness journey. Download Athlete Link now and let's get ready to train together!
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
-    <br />
+
     <br />
     <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/2022-csc-59866/AthleteLink/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/github_username/repo_name/issues">Request Feature</a>
+    <a href="https://github.com/2022-csc-59866/AthleteLink/issues">Request Feature</a>
   </p>
 </div>
 
@@ -51,6 +64,7 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
+        <li>React JS, Firebase, Express JS, Node JS </li>
       </ul>
     </li>
     <li>
