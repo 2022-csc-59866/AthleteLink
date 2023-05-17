@@ -54,6 +54,12 @@
 
 <br/>
   <a href="https://github.com/2022-csc-59866/AthleteLink">View Demo</a>
+
+
+https://github.com/2022-csc-59866/AthleteLink/assets/69356399/95aea575-2774-4dfe-8b67-773686431486
+
+
+
 <br/>
   <a href="https://github.com/2022-csc-59866/AthleteLink/issues">Report Bug</a>
 <br/>
