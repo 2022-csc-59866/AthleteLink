@@ -2,11 +2,8 @@ import { useState } from "react";
 import GymCard from "./GymCard";
 import "./SearchGyms.css";
 import { TextField, Button, CircularProgress, Avatar } from "@mui/material";
-import dynamic from "next/dynamic";
-// import LocationAutoComplete from "./LocationAutoComplete";
-const LocationAutoComplete = dynamic(() => import("./LocationAutoComplete"), {
-  ssr: false, // Disable server-side rendering
-});
+
+import LocationAutoComplete from "./LocationAutoComplete";
 
 function SearchGyms() {
   const [gymData, setGymData] = useState([]);
