@@ -27,11 +27,14 @@ const database = firebaseApp.firestore();
 const auth = firebase.auth();
 const geofirestore = new GeoFirestore(firestore);
 
-// const storage = firebase.storage();
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    console.log("User is signed in:", user);
+  } else {
+    console.log("No user is signed in");
+  }
+});
 
 const provider = new firebase.auth.GoogleAuthProvider();
-// const usersCollection = geoFirestore.collection("users");
-// const usersRef = collection(geo, "users");
-// const usersRef = geo.collection("users");
 
 export { auth, database, provider, geofirestore };

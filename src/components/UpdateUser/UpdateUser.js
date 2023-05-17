@@ -6,7 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useStateValue } from "../../StateProvider";
 import firebase from "firebase/compat/app";
-import { database } from "../../firebase";
+import { auth } from "../../firebase";
 import CardContent from "@material-ui/core/CardContent";
 import Fab from "@material-ui/core/Fab";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -336,9 +336,18 @@ const UpdateUser = () => {
       console.error("Error submitting onboarding data:", error);
     }
   };
+  const handleLogout = async () => {
+    try {
+      await firebase.auth().signOut();
+      localStorage.clear();
+      window.location.reload();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
-    <div>
+    <div style={{ marginBottom: "20%" }}>
       {redirect ? <Redirect push to="/myprofile" /> : null}
       <div className="edit__outterContainer">
         <div className="edit__innerContainer">
@@ -346,6 +355,7 @@ const UpdateUser = () => {
             className={classes.root2}
             onSubmit={updateProfile}
             ref={formRef}
+            style={{ marginBottom: "20px" }}
           >
             <Box m={2} pb={1}>
               <h1 className="edit__header">Welcome Back {userData.username}</h1>
@@ -554,6 +564,21 @@ const UpdateUser = () => {
               </Button>
             </div>
           </form>
+        </div>
+      </div>
+      <div className="edit__outterContainer">
+        <div className="edit__innerContainerButton">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleLogout}
+            style={{
+              width: "100%",
+            }}
+            fullWidth
+          >
+            Log Out
+          </Button>
         </div>
       </div>
     </div>
