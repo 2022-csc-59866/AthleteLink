@@ -100,9 +100,9 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 ### Built With
 
 * [![React][React.js]][React-url]
-* [![Firebase][Firebase]][Vue-url]
-* [![ExpressJS][ExpressJS]][ExpressJS-url]
-* [![Node][NodeJS]][NodeJS-url]
+  <li>Firebase </li>
+  <li>Express JS </li>
+  <li>Node JS </li>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
