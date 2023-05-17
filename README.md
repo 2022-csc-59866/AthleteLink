@@ -169,10 +169,13 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+**Key Features:**
+
+- **Swipe and Match:** Explore user profiles and indicate your interest with a simple swipe.
+- **Real-time Chat:** Connect with your training partner and plan workouts in a seamless messaging interface.
+- **Gym Finder:** Discover nearby gyms and fitness facilities based on your preferences.
+- **Profile Customization:** Showcase your fitness journey, interests, and goals through a personalized profile.
+- **Privacy and Safety:** We prioritize the privacy and safety of our users, ensuring a secure and enjoyable experience.
 
 See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
 
