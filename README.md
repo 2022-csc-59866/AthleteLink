@@ -69,10 +69,6 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
-        <li>React JS</li>
-        <li>Firebase </li>
-        <li>Express JS </li>
-        <li>Node JS </li>
       </ul>
     </li>
     <li> <a href="#getting-started">Getting Started</a> </li>
@@ -103,14 +99,10 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 
 ### Built With
 
-* [![Next][Next.js]][Next-url]
 * [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+* [![Firebase][Firebase]][Vue-url]
+* [![ExpressJS][ExpressJS]][ExpressJS-url]
+* [![Node][NodeJS]][NodeJS-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
