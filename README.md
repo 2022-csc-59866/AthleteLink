@@ -124,19 +124,32 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Get a free API Key at [google developers ](https://developers.google.com/apis-explorer)
+1. Get a free API Key at [Google Developers Api Explorer ](https://developers.google.com/apis-explorer)
 2. Clone the repo
    ```
    git clone [https://github.com/github_username/repo_name.gi](https://github.com/2022-csc-59866/AthleteLink.git)
    ```
 3. Install NPM packages
-   ```sh
+   ```
    npm install
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+4. Enter your Firebase Configurations in `api/server/config.js`
    ```
+   Update admin.initializeApp({}) with firebase configuration
+   ```
+5. Enter your Firebase Configurations in `src/firebase.js`
+   ```
+   Update firebaseConfig with your own apiKey.
+   ```
+6. Run the Backend Server `cd api/server`
+   ```
+   npm run start
+   ```
+7. Run fronend client `main directiory`
+   ```
+   npm run start
+   ```
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
