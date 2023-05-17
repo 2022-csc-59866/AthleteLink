@@ -6,7 +6,7 @@ import NoMatches from "../NoMatches/NoMatches";
 import "./Chats.css";
 
 function Chats() {
-  const [{ user, userData }, dispatch] = useStateValue();
+  const [{ user, userData, newUserFlag }, dispatch] = useStateValue();
   const [chatList, setChatList] = useState([]);
   const getUserChats = async (currentUserId) => {
     try {
@@ -33,6 +33,12 @@ function Chats() {
       console.error("Error getting user chats:", error);
     }
   };
+  useEffect(() => {
+    console.log("REDUX DATA USER: ", user);
+    console.log("REDUX DATA: USER DATA", userData);
+    console.log("REDUX DATA: NEW USER FLAG", newUserFlag);
+    console.log(localStorage["my-app-state"]);
+  }, []);
 
   useEffect(() => {
     if (user) {

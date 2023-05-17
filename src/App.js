@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./components/Header/Header";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import AthleteLinkCards from "./components/Cards/AthleteLinkCards";
@@ -18,7 +18,12 @@ import SearchGyms from "./components/SearchGyms/SearchGyms";
 function App() {
   const [{ user, newUserFlag, userData }, dispatch] = useStateValue();
   const [filteredData, setFilteredData] = useState([]);
-
+  useEffect(() => {
+    console.log("REDUX DATA USER: ", user);
+    console.log("REDUX DATA: USER DATA", userData);
+    console.log("REDUX DATA: NEW USER FLAG", newUserFlag);
+    console.log(localStorage["my-app-state"]);
+  }, []);
   return (
     <ToastProvider autoDismiss autoDismissTimeout="3000">
       <div className="App">
