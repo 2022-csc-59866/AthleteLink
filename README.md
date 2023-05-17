@@ -53,7 +53,7 @@
 </div>
 
 <br/>
-  <a href="https://github.com/github_username/repo_name">View Demo</a>
+  <a href="https://github.com/2022-csc-59866/AthleteLink">View Demo</a>
 <br/>
   <a href="https://github.com/2022-csc-59866/AthleteLink/issues">Report Bug</a>
 <br/>
@@ -69,7 +69,12 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
-        <li>React JS, Firebase, Express JS, Node JS </li>
+        <li>React JS</li>
+        <li>Firebase </li>
+        <li>Express JS </li>
+        <li>Node JS </li>
+
+
       </ul>
     </li>
     <li>
