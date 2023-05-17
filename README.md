@@ -28,8 +28,9 @@
 <h3 align="center">Athlete Link</h3>
 
   <p align="center">
-      Introducing Athlete Link, the ultimate platform for fitness enthusiasts and athletes to connect, train, and reach their fitness goals together. With our innovative and user-friendly     interface, finding the perfect training partner has never been easier.
-
+      
+    Introducing Athlete Link, the ultimate platform for fitness enthusiasts and athletes to connect, train, and reach their fitness goals together. With our innovative and user-friendly     interface, finding the perfect training partner has never been easier.
+    
       Swipe, match, and connect! Athlete Link offers a seamless and engaging experience similar to popular dating apps. Browse through a diverse community of fitness enthusiasts in your area, and with a simple swipe, indicate your interest in their profile. Whether you're looking for a workout buddy, a running partner, a yoga companion, or someone to hit the weights with, Athlete Link is here to help you find your ideal training match.
 
       But it doesn't stop there! Once you've found a match, our real-time chat feature allows you to connect instantly and start planning your training sessions. Coordinate schedules, exchange fitness tips, and motivate each other towards success. Athlete Link creates a supportive and dynamic environment where you can build meaningful connections with like-minded individuals who share your passion for fitness.
