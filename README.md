@@ -51,12 +51,15 @@
   
   </p>
 </div>
+
+<br/>
   <a href="https://github.com/github_username/repo_name">View Demo</a>
-    <a href="https://github.com/2022-csc-59866/AthleteLink/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/2022-csc-59866/AthleteLink/issues">Request Feature</a>
+<br/>
+  <a href="https://github.com/2022-csc-59866/AthleteLink/issues">Report Bug</a>
+<br/>
+  <a href="https://github.com/2022-csc-59866/AthleteLink/issues">Request Feature</a>
 
-
+<br/>
 
 <!-- TABLE OF CONTENTS -->
 <details>
