@@ -177,7 +177,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - **Profile Customization:** Showcase your fitness journey, interests, and goals through a personalized profile.
 - **Privacy and Safety:** We prioritize the privacy and safety of our users, ensuring a secure and enjoyable experience.
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/2022-csc-59866/AthleteLink/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -213,9 +213,11 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+## Contact
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Khuzaima Rehman - [LinkedIn](https://www.linkedin.com/in/khuziamarehman/) - rehmankuhziama@gmail.com
+
+Project Link: [https://github.com/2022-csc-59866/AthleteLink](https://github.com/2022-csc-59866/AthleteLink)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
