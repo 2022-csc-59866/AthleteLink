@@ -73,15 +73,21 @@
         <li>Firebase </li>
         <li>Express JS </li>
         <li>Node JS </li>
-
-
       </ul>
     </li>
+    
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
+        ``` 
+        git clone https://github.com/2022-csc-59866/AthleteLink.git
+        ```
+       
         <li><a href="#installation">Installation</a></li>
+        ```
+        npm install
+        ```
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
