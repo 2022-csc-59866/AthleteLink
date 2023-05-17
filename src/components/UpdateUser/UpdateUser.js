@@ -265,10 +265,16 @@ const UpdateUser = () => {
 
     try {
       const formDataProfile = new FormData();
-      const userLocation = new firebase.firestore.GeoPoint(
-        parseInt(lat),
-        parseInt(lng)
-      );
+
+      var userLocation;
+      if (isNaN(lat) || isNaN(lng)) {
+        userLocation = new firebase.firestore.GeoPoint(40.7128, 74.006);
+      } else {
+        userLocation = new firebase.firestore.GeoPoint(
+          parseInt(lat),
+          parseInt(lng)
+        );
+      }
       const onboardingData = {
         userID: user,
         location: userLocation,
